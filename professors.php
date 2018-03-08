@@ -75,9 +75,9 @@ while($row = mysqli_fetch_assoc($result))
     <h2 style="margin-right:">Professors</h2>
 
     <?php echo isset($_SESSION['edit_registration_success']) ? $_SESSION['edit_registration_success'] : "";
-
-    unset($_SESSION['edit_registration_success']);
-
+        
+        if(isset($_SESSION['edit_registration_success']))
+            unset($_SESSION['edit_registration_success']);
     ?>
     <hr style="margin-left: -25px;">
 

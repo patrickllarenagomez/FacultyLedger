@@ -3,22 +3,31 @@
 <html lang="en">
 <head>
 <title>Class Schedule</title>
-<!-- for-mobile-apps -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<!-- //for-mobile-apps -->
-<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/styles.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/font-awesome.css" rel="stylesheet"> 
 
-<!--web-fonts-->
-<link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
-<link href="//fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-<!--//web-fonts-->
-<!--//fonts-->
-<!-- js -->
-<link rel="icon" type="image/png" href="images/logo-pcu.png">
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#table-schedule').DataTable();
+    });
+
+    function activate(id)
+    {
+        if(confirm("Make schedule active?"))
+            location.href = "activateSchedule.php?id=" + id;
+    }
+
+    function deactivate(id)
+    {
+        if(confirm("Deactivate schedule?"))
+            location.href = "deactivateSchedule.php?id=" + id;
+    }
+
+</script>
+
+
 <style type="text/css">
     th {
         font-weight: bold;
@@ -27,20 +36,34 @@
         margin-right: 3px;
     }
 </style>
+
+
+
+<?php include 'headSettings.php';?>
 </head>
 <body>
-<!-- //main-content -->
-        <div class="wthree-main-content">
-            <div class="container">
-                <center>
+
+<?php include 'headerAndSideBar.php';?>
+
+
+<div class="dash_page">
+  <div class="col-lg-10">
+    <h2 style="margin-right:">Schedule  </h2>
+
+    <?php echo isset($_SESSION['edit_registration_success']) ? $_SESSION['edit_registration_success'] : "";
+
+        if(isset($_SESSION['edit_registration_success']))
+            unset($_SESSION['edit_registration_success']);
+
+    ?>
+    <hr style="margin-left: -25px;">
+
+        <div class="row">
+          <div class="container">
                     <div class="buttons" style="float: right; margin-bottom: 15px;">
                         <button class="btn btn-primary">Add</button>
-                        <button class="btn btn-primary">Edit</button>
-                        <button class="btn btn-primary">Delete</button>
                     </div>
-                        <!--Table-->
-                        <table class="table table-bordered table-hover">
-                            <!--Table head-->
+                        <table id="table-schedule" class="table table-bordered table-hover">
                             <thead class="blue-grey lighten-4">
                                 <tr>
                                     <th>Semester</th>
@@ -52,8 +75,6 @@
                                     <th>Room No.</th>
                                 </tr>
                             </thead>
-                            <!--Table head-->
-                            <!--Table body-->
                             <tbody>
                                 <tr>
                                     <td>1st</td>
@@ -65,15 +86,10 @@
                                     <td>314</td>
                                 </tr>
                             </tbody>
-                            <!--Table body-->
                         </table>
-                        <!--Table-->
                     </div>
-                </center>
-                </div>
+
             </div>
             </div>
-        </div>
-        </div>
 </body>
 </html>
