@@ -16,9 +16,12 @@ define('ACTIVE', 1);
 define('INACTIVE', 0);
 
 define('SCHEDULE_ID','schedule_id');
+define('SUBJECT_CODE', 'subject_code');
+define('SUBJECT_NAME', 'subject_name');
 define('ROOM_NUMBER','room_number');
 define('SCHEDULE_DAY','schedule_day');
-define('SCHEDULE_TIME','schedule_time');
+define('SCHEDULE_TIME_IN','schedule_time_in');
+define('SCHEDULE_TIME_OUT','schedule_time_out');
 
 define('TIME_LOG_ID','time_log_id');
 define('TIME_LOG_DATE','time_log_date');
@@ -38,9 +41,11 @@ define('USER_LEVEL','user_level');
 define('SECRETARY', 1);
 define('CHECKER',2);
 define('ADMIN',3);
-						
+define('NONE', "<----->");
+define('LATE', 'LATE');
+define('ONTIME', 'ON TIME');
+define('IS_LATE', 'is_late');
 
-					
 
 
 

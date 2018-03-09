@@ -11,7 +11,6 @@ if(isset($_SESSION[USER_LEVEL]))
 }
 
 
-
 $searchSQL = "SELECT * FROM ".TBL_PROFESSOR." ORDER BY ".PROFESSOR_ID." DESC";
 $result = mysqli_query($con, $searchSQL);
 $tableData = '';
@@ -99,7 +98,6 @@ while($row = mysqli_fetch_assoc($result))
 						<?php echo isset($tableData) ? $tableData : "";?>
 					</tbody>
 				</table>
-
 </div>
 
 </div>

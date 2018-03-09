@@ -11,7 +11,6 @@ if(isset($_SESSION[USER_LEVEL]))
     header('location:login.php');
 }
 
-
 if(isset($_POST['registrationBtn']))
 {
     $serial_number = $_POST['form-card-number'];

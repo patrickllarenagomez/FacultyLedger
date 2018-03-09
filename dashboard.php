@@ -1,3 +1,19 @@
+<?php 
+
+session_start();
+
+require 'connect.php';
+include 'constants.php';
+include 'helper.php';
+
+if(isset($_SESSION[USER_LEVEL]))
+{
+  header('location: login.php');
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +25,7 @@
 
 <div class="dash_page">
   <div class="col-lg-10">
-    <h2 style="padding: 20px 0 9px 0;">Welcome Admin!</h2>
+    <h2 style="padding: 20px 0 9px 0;">Welcome <?php echo $_SESSION[USER_FIRST_NAME]?>!</h2>
     <hr style="margin-left: -25px;">
 
 <div class="row">

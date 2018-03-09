@@ -1,87 +1,118 @@
+<?php 
+
+session_start();
+
+require 'connect.php';
+include 'constants.php';
+include 'helper.php';
+
+if(isset($_SESSION[USER_LEVEL]))
+{
+    header('location: login.php');
+}
+
+$getProfessorNames = "SELECT ".PROFESSOR_ID.",".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
+
+$result = mysqli_query($con, $getProfessorNames);
+$professor_names = array();
+
+while($row = mysqli_fetch_assoc($result))
+{
+    $professor_names[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME];
+}
+
+$searchSQL = "SELECT * FROM ".TBL_TIME_LOG." ORDER BY ".TIME_LOG_ID." DESC";
+
+$dataresult = mysqli_query($con, $searchSQL);
+
+$tableData = '';
+$no = 1;
+
+while($rows = mysqli_fetch_assoc($dataresult))
+{
+    $tableData .= '<tr>
+    <td>'.$no.'</td>
+    <td>'.$professor_names[$rows[PROFESSOR_ID]].'</td>
+    <td>'.$rows[TIME_LOG_DATE].'</td>
+    <td>'.$rows[TIME_LOG_IN].'</td>
+    <td>'.(($rows[TIME_LOG_OUT] != "00:00:00") ? $rows[TIME_LOG_OUT] : NONE).'</td>
+    <td>'.'ROOM '.$rows[ROOM_NUMBER].'</td>
+    <td>'.($rows[IS_LATE] == 1 ? LATE : ONTIME).'</td>
+    </tr>';
+    $no++;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <title>Attendance Log Sheet</title>
 
-<!-- for-mobile-apps -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 
-<!-- //for-mobile-apps -->
-<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/styles.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/font-awesome.css" rel="stylesheet"> 
-<!--//fonts-->
+<script type="text/javascript">
+    $(document).ready(function(){
 
-<!--web-fonts-->
-<link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
-<link href="//fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-<!--//web-fonts-->
+        $("#table-log").DataTable();
+
+    });
+
+</script>
 
 <!-- Date Picker -->
-<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<!-- <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
 <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<!--//Date Picker -->
+ --><!--//Date Picker -->
 
-<!-- js -->
-<link rel="icon" type="image/png" href="images/logo-pcu.png">
-<style type="text/css">
-    th {
-        font-weight: bold;
-    }
-</style>
+<?php include 'headSettings.php';?>
+
 </head>
 <body>
-<!-- //main-content -->
-        <div class="wthree-main-content">
-            <div class="container">
-                <center>
+
+<?php include 'headerAndSideBar.php';?>
+
+
+<div class="dash_page">
+  <div class="col-lg-10">
+    <h2 style="margin-right:">Attendance Log</h2>
+
+    <hr style="margin-left: -25px;">
+
+        <div class="row">
+          <div class="container">
                     <div id="datepicker" style="float: left; margin-bottom: 20px;">
                         Select Start and End Date <input type='text' class="form-control daterange" id='datepicker'>
                             <script type="text/javascript">
                                 $('.daterange').daterangepicker();
                             </script>
                     </div>
-                        <!--Table-->
-                        <table class="table table-bordered table-hover">
-                            <!--Table head-->
-                            <thead style="background-color: lightblue;">
+                        <table id="table-log" class="display" cellspacing="0" width="100%">
+                            <thead>
                                 <tr>
-                                    <th>Time-In</th>
-                                    <th>Time-Out</th>
+                                    <th>No</th>
+                                    <th>Professor</th>
                                     <th>Date</th>
-                                    <th>Faculty Name</th>
-                                    <th>Card Number</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
                                     <th>Room No.</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            <!--Table head-->
-                            <!--Table body-->
                             <tbody>
                                 <tr>
-                                    <td>11:00 PM</td>
-                                    <td>2:00 PM</td>
-                                    <td>02-28-2018</td>
-                                    <td>Engr. Jun Lorico</td>
-                                    <td>55555444</td>
-                                    <td>RM 314</td>
+                                    <?php echo isset($tableData) ? $tableData : "";?>
                                 </tr>
                             </tbody>
-                            <!--Table body-->
                         </table>
-                        <!--Table-->
                     </div>
-                </center>
-                </div>
-            </div>
-            </div>
         </div>
-        </div>
+    </div>
+</div>
 
-        <!-- Script -->
         <script type="text/javascript">
         $(document).ready(function(){
          
@@ -97,7 +128,11 @@
            endDate: '+10d'
           }); 
         });
+        
         </script>
+
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+
 
 </body>
 </html>
