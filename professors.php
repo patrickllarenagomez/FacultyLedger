@@ -63,6 +63,7 @@ while($row = mysqli_fetch_assoc($result))
 </script>
 
 <?php include 'headSettings.php';?>
+
 </head>
 <body>
 
@@ -70,34 +71,31 @@ while($row = mysqli_fetch_assoc($result))
 
 
 <div class="dash_page">
-  <div class="col-lg-10">
-    <h2 style="margin-right:">Professors</h2>
+    <h1 class="page-header">Professors</h1>
 
     <?php echo isset($_SESSION['edit_registration_success']) ? $_SESSION['edit_registration_success'] : "";
         
         if(isset($_SESSION['edit_registration_success']))
             unset($_SESSION['edit_registration_success']);
     ?>
-    <hr style="margin-left: -25px;">
 
-<div class="row">
-  <div class="container">
-
+<div class="container" style="width: 900px;">
+    <div class="col-lg-12">
 		<table id="table-professors" class="display" cellspacing="0" width="100%">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Card Number</th>
-							<th>Phone Number</th>
-							<th>Is Active</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php echo isset($tableData) ? $tableData : "";?>
-					</tbody>
-				</table>
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Professor's Name</th>
+					<th>Card Number</th>
+					<th>Phone Number</th>
+					<th>Is Active</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php echo isset($tableData) ? $tableData : "";?>
+			</tbody>
+		</table>
 </div>
 
 </div>
