@@ -45,8 +45,8 @@ define('NONE', "<----->");
 define('LATE', 'LATE');
 define('ONTIME', 'ON TIME');
 define('IS_LATE', 'is_late');
-
-
+define('TBL_ROOM_AVAILABILITY','tbl_room_availability');
+define('IS_AVAILABLE', 'is_available');
 
 
 
