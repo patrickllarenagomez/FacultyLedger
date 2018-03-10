@@ -1,0 +1,92 @@
+input[type="text"] {
+    height: 50px;
+    margin: 0;
+    padding: 0 20px;
+    background: #fff;
+    border: 3px solid #e0e0d1;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 50px;
+    color: #888;
+    box-sizing: border-box;
+}
+
+button.btn {
+    height: 50px;
+    margin: 0;
+    padding: 0 20px;
+    vertical-align: middle;
+    background: #19b9e7;
+    border: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 50px;
+    color: #fff;
+}
+
+button.btn:hover { opacity: 0.6; color: #fff; }
+
+button.btn:active { outline: 0; opacity: 0.6; color: #fff; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+
+button.btn:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+
+button.btn:active:focus, button.btn.active:focus { outline: 0; opacity: 0.6; background: #19b9e7; color: #fff; }
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: #888;
+    line-height: 30px;
+}
+
+.form-box {
+    margin-top: 70px;
+}
+
+.form-top {
+    overflow: hidden;
+    padding: 0 25px 15px 25px;
+    background: #444;
+    background: rgba(0, 0, 0, 0.35);
+    -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;
+    text-align: left;
+}
+
+.form-bottom form button.btn {
+    height: 45px;
+    width: 20%;
+    margin: 10px 20px;
+}
+
+.form-bottom form .input-error {
+    border-color: #19b9e7;
+}
+
+.form-bottom {
+    padding: 25px 25px 30px 25px;
+    -moz-border-radius: 0 0 4px 4px; -webkit-border-radius: 0 0 4px 4px; border-radius: 0 0 4px 4px;
+    text-align: left;
+}
+
+/***** Media queries *****/
+
+@media (min-width: 992px) and (max-width: 1199px) {}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (max-width: 767px) {
+    
+    .middle-border { min-height: auto; margin: 65px 30px 0 30px; border-right: 0; 
+                        border-top: 1px solid #fff; border-top: 1px solid rgba(255, 255, 255, 0.6); }
+    
+}
+
+@media (max-width: 415px) {
+    
+    h1, h2 { font-size: 32px; }
+
+}
