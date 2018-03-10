@@ -107,8 +107,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
 
 <div class="dash_page">
-  <div class="col-lg-10">
-    <h2 style="margin-right:">Schedule </h2>
+    <h1 class="page-header">Schedule</h2>
 
     <?php echo isset($_SESSION['edit_schedule_success']) ? $_SESSION['edit_schedule_success'] : "";
 
@@ -116,34 +115,30 @@ while($rows = mysqli_fetch_assoc($dataresult))
             unset($_SESSION['edit_schedule_success']);
 
     ?>
-    <hr style="margin-left: -25px;">
 
-        <div class="row">
-          <div class="container">
-                    <div class="buttons" style="float: right; margin-bottom: 15px;">
-                        <a href="addschedule.php"><button class="btn btn-primary">Add</button></a>
-                    </div>
-                        <table id="table-schedule" class="display" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Professor</th>
-                                    <th>Subject Code</th>
-                                    <th>Subject Name</th>
-                                    <th>Day</th>
-                                    <th>Time</th>
-                                    <th>Room No.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php echo isset($tableData) ? $tableData : '' ;?>
-                            </tbody>
-                        </table>
-                    </div>
-
+        <div class="container" style="width: 900px;">
+            <div class="col-lg-12">
+                <div class="buttons" style="float: right; margin-bottom: 15px;">
+                    <a href="addschedule.php"><button class="btn btn-primary">Add</button></a>
+                </div>
+                <table id="table-schedule" class="display" cellspacing="0" width="100%">
+                   <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Professor</th>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Room No.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php echo isset($tableData) ? $tableData : '' ;?>
+                    </tbody>
+                </table>
             </div>
-            </div>
+        </div>
 
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 
