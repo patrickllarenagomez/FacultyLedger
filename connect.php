@@ -11,5 +11,7 @@ if(!mysqli_connect()){
 	echo 'Error. Connecting to the database failed.';
 }
 
+date_default_timezone_set('Asia/Manila');
+
 
 ?>

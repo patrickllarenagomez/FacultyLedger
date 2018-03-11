@@ -5,7 +5,6 @@ require 'connect.php';
 include 'constants.php';
 include 'helper.php';
 
-
 if(isset($_SESSION[USER_LEVEL]))
 {
     if($_SESSION[USER_LEVEL] == 1)

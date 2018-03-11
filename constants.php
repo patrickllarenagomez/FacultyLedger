@@ -47,8 +47,10 @@ define('ONTIME', 'ON TIME');
 define('IS_LATE', 'is_late');
 define('TBL_ROOM_AVAILABILITY','tbl_room_availability');
 define('IS_AVAILABLE', 'is_available');
-
-
+define('TIME_REQUIRED_FOR_NEXT_LOG', 'required_time');
+define('IS_UPDATED','is_updated');
+define('NOT_TIME_YET', 'not_time_yet');
+define('NO_PROFESSOR', 0);
 
 
 
