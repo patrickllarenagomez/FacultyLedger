@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Class Schedule</title>
+<title>Room Slot</title>
 
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
