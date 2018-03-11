@@ -17,6 +17,7 @@ if(isset($_SESSION[USER_LEVEL]))
 <!DOCTYPE html>
 <html>
 <head>
+<title>Dashboard</title>
 <?php include 'headSettings.php'; ?>
 </head>
 <body>

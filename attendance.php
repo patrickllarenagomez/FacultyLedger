@@ -51,22 +51,38 @@ while($rows = mysqli_fetch_assoc($dataresult))
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 
-<script type="text/javascript">
+  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script type="text/javascript"> 
     $(document).ready(function(){
+        var startDate;
+        var endDate;
 
         $("#table-log").DataTable();
+
+        $('.daterange').daterangepicker();
+
+        $('#btn-generate-pdf').click(function(){
+
+           startDate = $('.daterange').data('daterangepicker').startDate.format("YYYY-MM-DD");
+           endDate =  $('.daterange').data('daterangepicker').endDate.format("YYYY-MM-DD");
+
+           $
+
+        });
 
     });
 
 </script>
 
+
 <!-- Date Picker -->
 
-<!-- <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
+ --><script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
- --><!--//Date Picker -->
+<!--//Date Picker -->
 
 <?php include 'headSettings.php';?>
 
@@ -77,14 +93,13 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
 
 <div class="dash_page">
-    <h1 class="page-header">Attendance Log</h2>
+    <h1 class="page-header">Attendance Log</h1>
         <div class="container" style="width: 900px;">
+
             <div id="datepicker" style="float: left; margin-bottom: 20px;">
                         Select Start and End Date <input type='text' class="form-control daterange" id='datepicker'>
-                            <script type="text/javascript">
-                                $('.daterange').daterangepicker();
-                            </script>
             </div>
+            <button id="btn-generate-pdf" class="btn btn-primary" style="margin: 20px 0px 0px 15px">Generate PDF</button>
             <table id="table-log" class="display" cellspacing="0" width="100%">
                 <thead>
                     <tr>
@@ -104,26 +119,11 @@ while($rows = mysqli_fetch_assoc($dataresult))
         </div>
 </div>
 
-        <script type="text/javascript">
-        $(document).ready(function(){
-         
-          $('#datepicker').datepicker({
-           format: "yy-mm-dd",
-           startDate: '-1y -1m',
-           endDate: '+2m +10d'
-          });
 
-          $('#datepicker2').datepicker({
-           format: "yy-mm-dd",
-           startDate: '-1m',
-           endDate: '+10d'
-          }); 
-        });
-        
-        </script>
+<input type="hidden" name="startDT" id="startDT" value="">
+<input type="hidden" name="endDT" id="endDT" value="">
 
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-
 
 </body>
 </html>

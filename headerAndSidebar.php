@@ -19,7 +19,7 @@
         <li class="divider"></li>
         <li class="dropdown"><a href="attendance.php"><i class="fa fa-wpforms"></i>&nbsp; Attendance Log Sheet</a></li>
         <li class="divider"></li>
-        <li class="dropdown"><a href="#"><i class="fa fa-sitemap"></i>&nbsp; Room Slots</a></li>
+        <li class="dropdown"><a href="rooms.php"><i class="fa fa-sitemap"></i>&nbsp; Room Slots</a></li>
         <li class="dropdown"><a href="logout.php"><i class="fa fa-sign-out"></i>&nbsp; Log Out</a></li>
 
     </ul>

@@ -119,7 +119,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
         <div class="container" style="width: 1000px;">
             <div class="col-lg-12">
                 <div class="buttons" style="float: right; margin-bottom: 15px;">
-                    <a href="addschedule.php"><button class="btn btn-primary">Add</button></a>
+                    <a href="add_schedule.php"><button class="btn btn-primary">Add</button></a>
                 </div>
                 <table id="table-schedule" class="display" cellspacing="0" width="100%">
                    <thead>
