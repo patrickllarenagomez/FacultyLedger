@@ -6,22 +6,17 @@
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 <style type="text/css">
-    th {
-        font-weight: bold;
+    .square {
+      height: 30px;
+      width: 30px;
     }
-    input {
-        border-radius: 3px;
-        border: 2px solid gray;
-        padding: 5px;
-        background: rgba(255,255,255,0.5);
-    }
-    .styled-select.slate select {
-        font-size: 16px;
-        width: 130px;
-        border-radius: 3px;
-        border: 2px solid gray;
-        padding: 5px;
-        background: rgba(255,255,255,0.5);
+
+    label {
+      float: right;
+      margin-top: -25px;
+      margin-left: 50px;
+      font-size: 18px;
+      position: absolute;
     }
 
 </style>
@@ -35,6 +30,14 @@
 <div class="dash_page">
     <h1 class="page-header">Room Slot</h1>
         <div class="container" style="width: 1000px;">
+            <div class="col-md-3">
+                <h3>Legend: </h3> <br>
+                <div class="square" style="background-color: #66ff99;"></div>
+                <label>Still Available</label>
+                <br>
+                <div class="square" style="background-color: #ff3333;"></div>
+                <label>Not Available</label>
+            </div>
         </div>
 </div>
 
