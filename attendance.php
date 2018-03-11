@@ -77,40 +77,33 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
 
 <div class="dash_page">
-  <div class="col-lg-10">
-    <h2 style="margin-right:">Attendance Log</h2>
-
-    <hr style="margin-left: -25px;">
-
-        <div class="row">
-          <div class="container">
-                    <div id="datepicker" style="float: left; margin-bottom: 20px;">
+    <h1 class="page-header">Attendance Log</h2>
+        <div class="container" style="width: 900px;">
+            <div id="datepicker" style="float: left; margin-bottom: 20px;">
                         Select Start and End Date <input type='text' class="form-control daterange" id='datepicker'>
                             <script type="text/javascript">
                                 $('.daterange').daterangepicker();
                             </script>
-                    </div>
-                        <table id="table-log" class="display" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Professor</th>
-                                    <th>Date</th>
-                                    <th>Time In</th>
-                                    <th>Time Out</th>
-                                    <th>Room No.</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <?php echo isset($tableData) ? $tableData : "";?>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <table id="table-log" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Professor</th>
+                        <th>Date</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Room No.</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php echo isset($tableData) ? $tableData : "";?>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
 </div>
 
         <script type="text/javascript">
