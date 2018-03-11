@@ -53,7 +53,7 @@ if(isset($_POST['registrationBtn']))
 
 <div class="dash_page">
     <h1 class="page-header">Registration</h1>
-  <div class="container" style="width: 900px;">
+  <div class="container" style="width: 1000px;">
     <div class="col-lg-10">
       <div class="form-bottom">
         <form role="form" action="registration.php" method="post" class="registration-form">

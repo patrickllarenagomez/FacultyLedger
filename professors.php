@@ -79,7 +79,7 @@ while($row = mysqli_fetch_assoc($result))
             unset($_SESSION['edit_registration_success']);
     ?>
 
-<div class="container" style="width: 900px;">
+<div class="container" style="width: 1000px;">
     <div class="col-lg-12">
 		<table id="table-professors" class="display" cellspacing="0" width="100%">
 			<thead>
