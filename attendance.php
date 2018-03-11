@@ -98,9 +98,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
                         <?php echo isset($tableData) ? $tableData : "";?>
-                    </tr>
                 </tbody>
             </table>
         </div>
