@@ -54,52 +54,24 @@ while($rows = mysqli_fetch_assoc($dataresult))
   <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 <script type="text/javascript"> 
     $(document).ready(function(){
-        var startDate;
-        var endDate;
 
         $("#table-log").DataTable();
-
-        $('.daterange').daterangepicker();
-
-        $('#btn-generate-pdf').click(function(){
-
-           startDate = $('.daterange').data('daterangepicker').startDate.format("YYYY-MM-DD");
-           endDate =  $('.daterange').data('daterangepicker').endDate.format("YYYY-MM-DD");
-
-           $
-
-        });
 
     });
 
 </script>
-
-
-<!-- Date Picker -->
-
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<!-- <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
- --><script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<!--//Date Picker -->
 
 <?php include 'headSettings.php';?>
 
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'checkerHeaderAndSideBar.php';?>
 
 
 <div class="dash_page">
     <h1 class="page-header">Attendance Log</h1>
         <div class="container" style="width: 900px;">
-
-            <div id="datepicker" style="float: left; margin-bottom: 20px;">
-                        Select Start and End Date <input type='text' class="form-control daterange" id='datepicker'>
-            </div>
-            <button id="btn-generate-pdf" class="btn btn-primary" style="margin: 20px 0px 0px 15px">Generate PDF</button>
             <table id="table-log" class="display" cellspacing="0" width="100%">
                 <thead>
                     <tr>
@@ -118,10 +90,6 @@ while($rows = mysqli_fetch_assoc($dataresult))
             </table>
         </div>
 </div>
-
-
-<input type="hidden" name="startDT" id="startDT" value="">
-<input type="hidden" name="endDT" id="endDT" value="">
 
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 

@@ -61,11 +61,13 @@
           <div class="col-md-12 form-group">
               <div class="col-md-6">
                 <label>Card No.</label>
-                <input type="text" name="card_no" style="width: 100px;">
+                <input type="text" name="card_no" style="width: 150px;">
               </div>
               <div class="col-md-6">
                   <label>Professor's Name</label>
-                  <input type="text" name="prof">
+                  <div class="dropdown styled-select slate" style="display: inline-block;">
+                      <input type="text" name="form-professor">
+                  </div>
               </div>
               <div class="col-md-6">
                   <label>Subject Code</label>
@@ -78,7 +80,7 @@
               <div class="col-md-6">
                   <label>Day</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select>
+                      <select name="day">
                         <option>Monday</option>
                         <option>Tuesday</option>
                         <option>Wednesday</option>
@@ -90,12 +92,36 @@
               </div>
               <div class="col-md-6">
                   <label>Room No.</label>
-                  <input type="number" name="prof" min="1" max="3" style="width: 70px">
+                  <div class="dropdown styled-select slate" style="display: inline-block;">
+                      <select style="width: 80px;">
+                        <option>300</option>
+                        <option>301</option>
+                        <option>302</option>
+                      </select>
+                  </div>
               </div>
               <div class="col-md-6">
                   <label>Time Schedule</label>
-                  <input name="start_time" style="width: 70px;">
-                  <input name="end_time" style="width: 70px;">
+                  <div class="dropdown styled-select slate" style="display: inline-block;">
+                      <select name="form-day" style="width: 80px;">
+                        <option>1:00</option>
+                        <option>2:00</option>
+                        <option>3:00</option>
+                        <option>4:00</option>
+                        <option>5:00</option>
+                        <option>6:00</option>
+                      </select>
+                  </div>
+                  <div class="dropdown styled-select slate" style="display: inline-block;">
+                      <select name="form-day" style="width: 80px;">
+                        <option>1:00</option>
+                        <option>2:00</option>
+                        <option>3:00</option>
+                        <option>4:00</option>
+                        <option>5:00</option>
+                        <option>6:00</option>
+                      </select>
+                  </div>
                   <!-- Call Date Picker Here -->
               </div>
               <div class="col-md-6 buttons">

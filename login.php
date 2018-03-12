@@ -10,7 +10,7 @@ if(isset($_SESSION[USER_LEVEL]))
     if($_SESSION[USER_LEVEL] == 1)
         header('location:dashboard.php');
     else if($_SESSION[USER_LEVEL] == 2)
-        header('location:checker.php');
+        header('location:checkerAttendance.php');
     else
         header('location:admin.php');
         
@@ -46,7 +46,7 @@ if(isset($_POST['submitLogin']))
             }
             else if($dataRow[USER_LEVEL] == CHECKER)
             {
-                header('location: checker.php');
+                header('location: checkerAttendance.php');
             }
             else
             {
