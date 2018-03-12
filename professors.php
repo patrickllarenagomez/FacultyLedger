@@ -42,6 +42,7 @@ while($row = mysqli_fetch_assoc($result))
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 
+
 <script type="text/javascript">
 
 	$(document).ready(function() {
@@ -80,7 +81,11 @@ while($row = mysqli_fetch_assoc($result))
     ?>
 
 <div class="container" style="width: 1000px;">
+
     <div class="col-lg-12">
+    	<div class="buttons" style="float: right; margin-bottom: 15px;">
+                    <a href="registration.php"><button class="btn btn-primary">Add</button></a>
+                </div>
 		<table id="table-professors" class="display" cellspacing="0" width="100%">
 			<thead>
 				<tr>

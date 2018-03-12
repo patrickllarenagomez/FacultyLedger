@@ -46,11 +46,11 @@ while($rows = mysqli_fetch_assoc($dataresult))
     $tableData .= '<tr>
     <td>'.$no.'</td>
     <td>'.$professor_names[$rows[PROFESSOR_ID]].'</td>
-    <td>'.$rows[SUBJECT_CODE].'</td>
+    <td align="center">'.$rows[SUBJECT_CODE].'</td>
     <td>'.$rows[SUBJECT_NAME].'</td>
     <td>'.$days[$rows[SCHEDULE_DAY]].'</td>
-    <td>'.$rows[SCHEDULE_TIME_IN].' - '.$rows[SCHEDULE_TIME_OUT].'</td>
-    <td>'.$rows[ROOM_NUMBER].'</td>
+    <td>'.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_IN])).' - '.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_OUT])).'</td>
+    <td align="center">'.$rows[ROOM_NUMBER].'</td>
     </tr>';
     $no++;
 }

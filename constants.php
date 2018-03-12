@@ -41,7 +41,7 @@ define('USER_LEVEL','user_level');
 define('SECRETARY', 1);
 define('CHECKER',2);
 define('ADMIN',3);
-define('NONE', "<----->");
+define('NONE', "-");
 define('LATE', 'LATE');
 define('ONTIME', 'ON TIME');
 define('IS_LATE', 'is_late');

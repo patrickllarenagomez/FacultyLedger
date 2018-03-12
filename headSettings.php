@@ -5,5 +5,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.css" rel="stylesheet">
     <link href="css/dashboard-styles.css" rel="stylesheet">
+    <script src="js/bootstrap.min.js"></script>
+
         <!-- Morris Chart CSS -->
     <link href="css/morris.css" rel="stylesheet">

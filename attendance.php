@@ -34,8 +34,8 @@ while($rows = mysqli_fetch_assoc($dataresult))
     <td>'.$no.'</td>
     <td>'.$professor_names[$rows[PROFESSOR_ID]].'</td>
     <td>'.$rows[TIME_LOG_DATE].'</td>
-    <td>'.$rows[TIME_LOG_IN].'</td>
-    <td>'.(($rows[TIME_LOG_OUT] != "00:00:00") ? $rows[TIME_LOG_OUT] : NONE).'</td>
+    <td>'.date('h:i:s a', strtotime($rows[TIME_LOG_IN])).'</td>
+    <td>'.(($rows[TIME_LOG_OUT] != "00:00:00") ? date('h:i:s a', strtotime($rows[TIME_LOG_OUT])) : NONE).'</td>
     <td>'.'ROOM '.$rows[ROOM_NUMBER].'</td>
     <td>'.($rows[IS_LATE] == 1 ? LATE : ONTIME).'</td>
     </tr>';
@@ -51,7 +51,8 @@ while($rows = mysqli_fetch_assoc($dataresult))
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 
-  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+  <script src="js/jquery-ui.js"></script>
 <script type="text/javascript"> 
     $(document).ready(function(){
         var startDate;
@@ -66,23 +67,23 @@ while($rows = mysqli_fetch_assoc($dataresult))
            startDate = $('.daterange').data('daterangepicker').startDate.format("YYYY-MM-DD");
            endDate =  $('.daterange').data('daterangepicker').endDate.format("YYYY-MM-DD");
 
-           $
-
         });
+
+        $("#btn-generate-pdf").click(function(){
+
+            $("#startDT").val(startDate);
+            $("#endDT").val(endDate);
+            $("#thisSubmit").submit();
+        });
+
 
     });
 
 </script>
 
-
-<!-- Date Picker -->
-
-
-<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<!-- <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />
- --><script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<!--//Date Picker -->
+<script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
 
 <?php include 'headSettings.php';?>
 
@@ -94,6 +95,11 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
 <div class="dash_page">
     <h1 class="page-header">Attendance Log</h1>
+        <?php echo isset($_SESSION['generate_PDF']) ? $_SESSION['generate_PDF'] : "";
+        
+        if(isset($_SESSION['generate_PDF']))
+            unset($_SESSION['generate_PDF']);
+    ?>
         <div class="container" style="width: 900px;">
 
             <div id="datepicker" style="float: left; margin-bottom: 20px;">
@@ -119,9 +125,10 @@ while($rows = mysqli_fetch_assoc($dataresult))
         </div>
 </div>
 
-
+<form id="thisSubmit" method="POST" action="generateReport.php">
 <input type="hidden" name="startDT" id="startDT" value="">
 <input type="hidden" name="endDT" id="endDT" value="">
+</form>
 
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 

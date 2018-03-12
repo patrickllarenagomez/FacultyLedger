@@ -11,7 +11,38 @@ if(!isset($_SESSION[USER_LEVEL]))
   header('location: login.php');
 }
 
+$getProfessorNames = "SELECT ".PROFESSOR_ID.",".PROFESSOR_FIRST_NAME.", 
+".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
 
+$result = mysqli_query($con, $getProfessorNames);
+$professor_names = array();
+
+while($row = mysqli_fetch_assoc($result))
+{
+    $professor_names[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME];
+}
+
+$retrieveSQL = "SELECT * FROM ".TBL_ROOM_AVAILABILITY."";
+
+$roomavail = mysqli_query($con, $retrieveSQL);
+$dataList = '';
+while($row = mysqli_fetch_assoc($roomavail))
+{
+    //#66ff99 green
+    //#ff3333 red
+    $dataList .= '<tr>
+        <td><div class="legend" style="background-color:'.($row[IS_AVAILABLE] == 1 ? "#66ff99" :  "#ff3333").'"></div></td>
+        <td>Room '.(isset($row[ROOM_NUMBER]) ? $row[ROOM_NUMBER] : '').'</td>
+        <td>'.($row[PROFESSOR_ID] != 0 ? $professor_names[$row[PROFESSOR_ID]] : '-' ).'</td>
+    </tr>';
+    
+}
+
+'<tr>
+        <td><div class="legend" style="background-color:'.($row[IS_AVAILABLE] == 1 ? "#66ff99" :  "#ff3333").'"></div></td>
+        <td>Room '.(isset($row[ROOM_NUMBER]) ? $row[ROOM_NUMBER] : '').'</td>
+        <td>'.($row[PROFESSOR_ID] != 0 ? $professor_names[$row[PROFESSOR_ID]] : '-' ).'</td>
+    </tr>';
 ?>
 
 
@@ -34,10 +65,9 @@ if(!isset($_SESSION[USER_LEVEL]))
         width: 25px;
     }
 
-    .legend, .rooms, .prof {
+    .legend, .rooms {
         display: inline-block;
         vertical-align: baseline;
-        margin-top: 25px;
         margin-left: 10px;
     }
 
@@ -66,6 +96,11 @@ if(!isset($_SESSION[USER_LEVEL]))
       position: absolute;
     }
 
+    th 
+    {
+        font-size:18px;
+    }
+
 </style>
 
 <?php include 'headSettings.php';?>
@@ -77,32 +112,23 @@ if(!isset($_SESSION[USER_LEVEL]))
 <div class="dash_page">
     <h1 class="page-header">Room Slot</h1>
         <div class="container" style="width: 1000px;">
-            <div class="col-md-3" style="margin-top: 100px;">
+            <div class="col-md-3" style="margin-top: 50px;">
                 <h2>Legend: </h2> <br>
                 <div class="square" style="background-color: #66ff99;"></div>
-                <label>Still Available</label>
+                <label>Available</label>
                 <br>
                 <div class="square" style="background-color: #ff3333;"></div>
                 <label>Not Available</label>
             </div>
-            <div class="row">
-                <h3 style="margin-left: 40px;">List of Rooms</h3>
-                <h3>Professor</h3>
-            </div>
             <div class="col-md-9">
-                <div class="col-md-4">
-                    <div class="legend" style="background-color: #66ff99;"></div>
-                    <label class="rooms">Room 101</label><br>
-                    <div class="legend" style="background-color: #ff3333;"></div>
-                    <label class="rooms">Room 102</label><br>
-                    <div class="legend" style="background-color: #ff3333;"></div>
-                    <label class="rooms">Room 103</label><br>
-                </div>
-                <div class="col-md-4">
-                    <label class="prof">Engr. Julian Lorico</label><br>
-                    <label class="prof">Engr. Julian Lorico</label><br>
-                    <label class="prof">Engr. Julian Lorico</label>
-                </div>
+                <table class="table table-responsive">
+                    <tr>
+                        <th>Status</th>
+                        <th>Room</th>
+                        <th>Professor</th>
+                    </tr>
+                    <?php echo $dataList;?>
+                </table>
             </div>
         </div>
 </div>
