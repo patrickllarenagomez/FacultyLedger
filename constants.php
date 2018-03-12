@@ -8,7 +8,7 @@ define('TBL_USER', 'tbl_user');
 
 define('PROFESSOR_ID', 'professor_id');
 define('SERIAL_NUMBER', 'serial_number');
-define('PROFESSOR_FIRST_NAME','professor_first_name');					
+define('PROFESSOR_FIRST_NAME','professor_first_name');
 define('PROFESSOR_LAST_NAME', 'professor_last_name');
 define('PROFESSOR_PHONE_NUMBER', 'professor_phone_number');
 define('IS_ACTIVE', 'is_active');
@@ -51,7 +51,5 @@ define('TIME_REQUIRED_FOR_NEXT_LOG', 'required_time');
 define('IS_UPDATED','is_updated');
 define('NOT_TIME_YET', 'not_time_yet');
 define('NO_PROFESSOR', 0);
-
-
 
 ?>
