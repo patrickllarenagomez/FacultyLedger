@@ -12,8 +12,8 @@
                     <span class="icon-bar"></span>
                   </button>               
                 <div class="w3-logo">
-                    <h1><a href="index.php">Educative</a></h1>
-                    <label></label>
+                    <h1><a href="index.php">Faculty Ledger</a></h1>
+                    <label style="margin-left: 120px;"></label>
                 </div>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->

@@ -12,27 +12,7 @@
     <script src="js/jquery-2.1.4.min.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-static-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <img src="images/logo-pcu.png" name="logo" height="50" width="50" style="float: left; margin: 5px 0px;">
-      <a class="navbar-brand" href="#">&nbsp Faculty Attendance Ledger</a>
-    </div>
-  </div>
-</nav>
-<div class="navbar-default sidebar">
-    <div class="sidebar-nav navbar-collapse" id="sidebar">
-    <ul class="nav in">
-        <br>
-        <li class="divider"></li>
-        <li><a href="#"><span class="fa fa-user"></span> &nbspProfile</a></li>
-        <li class="divider"></li>
-        <li class="dropdown"><a href="#"><i class="fa fa-wpforms"></i>&nbsp Attendance Log Sheet</a></li>
-        <li class="divider"></li>
-        <li class="dropdown"><a href="#"><i class="fa fa-sitemap"></i>&nbsp Room Slots</a></li>
-    </ul>
-    </div>
-</div>
+<?php include 'checkerHeaderAndSideBar.php';?>
 
 <div class="dash_page">
   <div class="col-lg-10">

@@ -39,7 +39,7 @@ if(isset($_POST['submitLogin']))
             $_SESSION[USERNAME] = $dataRow[USERNAME];
             $_SESSION[USER_FIRST_NAME] = $dataRow[USER_FIRST_NAME];
             $_SESSION[USER_LAST_NAME] = $dataRow[USER_LAST_NAME];
-
+            $_SESSION[USER_LEVEL] = $dataRow[USER_LEVEL];
             if($dataRow[USER_LEVEL] == SECRETARY)
             {
                 header('location: dashboard.php');

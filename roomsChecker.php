@@ -1,3 +1,20 @@
+<?php 
+
+session_start();
+
+require 'connect.php';
+include 'constants.php';
+include 'helper.php';
+
+
+if(!isset($_SESSION[USER_LEVEL]))
+{
+  header('location:login.php');  
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +43,7 @@
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'checkerHeaderAndSideBar.php';?>
 
 <div class="dash_page">
     <h1 class="page-header">Room Slot</h1>
