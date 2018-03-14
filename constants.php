@@ -51,5 +51,8 @@ define('TIME_REQUIRED_FOR_NEXT_LOG', 'required_time');
 define('IS_UPDATED','is_updated');
 define('NOT_TIME_YET', 'not_time_yet');
 define('NO_PROFESSOR', 0);
-
+define('INVALIDLOG', 'invalid');
+define('ROWS', 'number_of_rows');
+define('SCHEDULE_COUNT', 'schedule_count');
+define("BASE_URL", "localhost/facultyledger/");
 ?>

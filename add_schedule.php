@@ -1,3 +1,42 @@
+<?php 
+
+
+session_start();
+
+require 'connect.php';
+include 'constants.php';
+include 'helper.php';
+
+if(!isset($_SESSION[USER_LEVEL]))
+{
+    header('location: login.php');
+}
+
+$professorArr = array();
+
+$profSQL = "SELECT ".PROFESSOR_ID.", ".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
+
+$result = mysqli_query($con, $profSQL);
+
+$option_professor = '';
+while($row = mysqli_fetch_assoc($result))
+{
+  $professorArr[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME]; 
+  $option_professor .= '<option value='.$row[PROFESSOR_ID].'>'.$row[PROFESSOR_LAST_NAME].', '.$row[PROFESSOR_FIRST_NAME].'</option>';
+}
+
+$roomSQL = "SELECT * FROM ".TBL_ROOM_AVAILABILITY."";
+
+$resultSet = mysqli_query($con, $roomSQL);
+$option_rooms = '';
+while($rowroom = mysqli_fetch_assoc($resultSet))
+{
+  $option_rooms .= '<option value='.$rowroom[ROOM_NUMBER].'>'.$rowroom[ROOM_NUMBER].'</option>';
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +100,7 @@
           <div class="col-md-12 form-group">
               <div class="col-md-6">
                 <label>Card No.</label>
-                <input type="text" name="card_no" style="width: 150px;">
+                <input type="text" name="card_no" id="card_no" readOnly="true" style="width: 150px;">
               </div>
               <div class="col-md-6">
                   <label>Subject Code</label>
@@ -70,10 +109,9 @@
               <div class="col-md-6">
                   <label>Professor's Name</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                    <select name="day" style="width: 200px;">
-                      <option>Engr. Julian Lorico</option>
-                      <option>Engr. Julian Lorico</option>
-                      <option>Engr. Julian Lorico</option>
+                    <select id="option_professor" name="day" style="width: 200px;">
+                      <option value="0">-----</option>
+                      <?php echo ($option_professor != '' ? $option_professor : ''); ?>
                     </select>
                   </div>
               </div>
@@ -85,12 +123,12 @@
                   <label>Day</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
                       <select name="day">
-                        <option>Monday</option>
-                        <option>Tuesday</option>
-                        <option>Wednesday</option>
-                        <option>Thursday</option>
-                        <option>Friday</option>
-                        <option>Saturday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
                       </select>
                   </div>
               </div>
@@ -98,9 +136,7 @@
                   <label>Room No.</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
                       <select style="width: 80px;">
-                        <option>300</option>
-                        <option>301</option>
-                        <option>302</option>
+                        <?php echo ($option_rooms != '' ? $option_rooms : '');?>
                       </select>
                   </div>
               </div>
@@ -137,6 +173,36 @@
 </div>
 
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    
+    var base_url = "";
+
+    var option_professor_value = $("#option_professor").val();
+
+    $("#option_professor").on('change', function(){
+
+      //ajax start
+      $.ajax({  
+              type: "POST",
+              url: 'getUserCardNumber.php',
+              data: {professor_id: option_professor_value},
+              dataType:"json",
+              success: function(response){
+                $('#card_no').val(response);
+              },
+              error: function(xhr, textStatus, errorThrown){
+               alert('request failed');
+              }
+          });
+        //ajax end
+        
+
+
+    });
+    
+  });
+</script>
 
 </body>
 </html>

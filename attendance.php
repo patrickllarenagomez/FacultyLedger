@@ -14,6 +14,7 @@ if(!isset($_SESSION[USER_LEVEL]))
 $getProfessorNames = "SELECT ".PROFESSOR_ID.",".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
 
 $result = mysqli_query($con, $getProfessorNames);
+
 $professor_names = array();
 
 while($row = mysqli_fetch_assoc($result))
