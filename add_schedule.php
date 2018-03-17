@@ -34,8 +34,79 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
   $option_rooms .= '<option value='.$rowroom[ROOM_NUMBER].'>'.$rowroom[ROOM_NUMBER].'</option>';
 }
 
-?>
+if(isset($_POST['schedSubmitBtn']))
+{
+  $checker = true;
 
+  $professor_id = $_POST['form-professor'];
+  $schedule_day = $_POST['form-schedule-day'];
+  $timein = $_POST['form-time-in'];
+  $timeout = $_POST['form-time-out'];
+  $subject_code = $_POST['form-subject-code'];
+  $subject_name = $_POST['form-subject-name'];
+  $room_number = $_POST['form-room-number'];
+
+  $searchSQL = "SELECT ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT." FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." = '$professor_id' AND ".IS_ACTIVE." = ".ACTIVE." AND ".SCHEDULE_DAY." = '$schedule_day'";
+
+  $resultSQL = mysqli_query($con,$searchSQL);
+
+  while($currentSched = mysqli_fetch_assoc($resultSQL))
+  {
+    if(strtotime($timein) < strtotime($currentSched[SCHEDULE_TIME_IN]) && strtotime($timeout) > strtotime($currentSched[SCHEDULE_TIME_OUT]))
+    {
+    $_SESSION["add_schedule_error"] = "<div class='alert alert-danger alert-dismissible'>
+    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+    <strong>Error:</strong> Conflict on Professor <strong>".$professorArr[$professor_id]."</strong> current schedule. Conflict time is: <strong>".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_IN]))." - ".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_OUT]))." </strong> 
+    </div>";
+    $checker = false;
+      break;
+    }
+  }
+
+  if($professor_id == 0)
+  {
+    $_SESSION['add_schedule_error'] = "<div class='alert alert-danger alert-dismissible'>
+    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+    <strong>Error: Professor cannot be null.</strong> 
+    </div>";
+    $checker = false;
+  }
+
+  if(strtotime($timein) > strtotime($timeout))
+  {
+    $_SESSION['add_schedule_error'] = "<div class='alert alert-danger alert-dismissible'>
+    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+    <strong>Error: Time In should be earlier than Time Out!</strong> 
+    </div>";
+    $checker = false;
+  }
+  else
+  {
+    $_SESSION['edit_schedule_success'] = "<div class='alert alert-success alert-dismissible'>
+    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+    <strong>Schedule was added successfully!</strong> 
+    </div>";
+  
+    if($checker == true)
+    {
+
+      $insertSQL = "INSERT INTO ".TBL_SCHEDULE."
+      (".PROFESSOR_ID.", ".SUBJECT_CODE.", ".SUBJECT_NAME.", ".ROOM_NUMBER.", ".SCHEDULE_DAY.", ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.") VALUES 
+      ('$professor_id', '$subject_code', '$subject_name', '$room_number', '$schedule_day', '$timein', '$timeout')";
+      //mysqli_query($con, $insertSQL);
+      //header("location: schedule.php");
+    }
+  }
+}
+showarray($_POST);
+if(isset($_POST['cancelBtn']))
+{
+  header("location: schedule.php");
+}
+
+
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,7 +167,17 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
 
 <div class="dash_page">
     <h1 class="page-header">Add Schedule</h1>
+    <?php 
+
+      echo isset($_SESSION['add_schedule_error']) ? $_SESSION['add_schedule_error'] : '';
+
+      if(isset($_SESSION['add_schedule_error']))
+        unset($_SESSION['add_schedule_error']);  
+
+
+    ?>
         <div class="container" style="width: 1000px;">
+          <form action="" method="POST">
           <div class="col-md-12 form-group">
               <div class="col-md-6">
                 <label>Card No.</label>
@@ -104,12 +185,12 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
               </div>
               <div class="col-md-6">
                   <label>Subject Code</label>
-                  <input type="text" name="subj_code">
+                  <input type="text" name="form-subject-code">
               </div>
               <div class="col-md-6">
                   <label>Professor's Name</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                    <select id="option_professor" name="day" style="width: 200px;">
+                    <select id="option_professor" name="form-professor" style="width: 200px;">
                       <option value="0">-----</option>
                       <?php echo ($option_professor != '' ? $option_professor : ''); ?>
                     </select>
@@ -117,12 +198,12 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
               </div>
               <div class="col-md-6">
                   <label>Subject Name</label>
-                  <input type="text" name="subj_name">
+                  <input type="text" name="form-subject-name">
               </div>
               <div class="col-md-6">
                   <label>Day</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select name="day">
+                      <select id="option_day" name="form-schedule-day">
                         <option value="1">Monday</option>
                         <option value="2">Tuesday</option>
                         <option value="3">Wednesday</option>
@@ -135,7 +216,7 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
               <div class="col-md-6">
                   <label>Room No.</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select style="width: 80px;">
+                      <select style="width: 80px;" name="form-room-number" id="option_room_number">
                         <?php echo ($option_rooms != '' ? $option_rooms : '');?>
                       </select>
                   </div>
@@ -143,31 +224,22 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
               <div class="col-md-6">
                   <label>Time Schedule</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select name="form-day" style="width: 80px;">
-                        <option>1:00</option>
-                        <option>2:00</option>
-                        <option>3:00</option>
-                        <option>4:00</option>
-                        <option>5:00</option>
-                        <option>6:00</option>
+                      <select name="form-time-in" id="option_schedule_in" style="width: 130px;">
+                        
                       </select>
                   </div>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select name="form-day" style="width: 80px;">
-                        <option>1:00</option>
-                        <option>2:00</option>
-                        <option>3:00</option>
-                        <option>4:00</option>
-                        <option>5:00</option>
-                        <option>6:00</option>
+                      <select name="form-time-out" id="option_schedule_out" style="width: 130px;">
+
                       </select>
                   </div>
-                  <!-- Call Date Picker Here -->
               </div>
               <div class="col-md-12 buttons" style="margin-top: 40px; float: left;">
-                  <button class="btn btn-primary">Save</button>
-                  <button class="btn btn-warning">Cancel</button>
+                  <button name="schedSubmitBtn" class="btn btn-primary">Save</button>
+                  <button name="cancelBtn" class="btn btn-warning">Cancel</button>
               </div>
+          </form>
+
           </div>
         </div>
 </div>
@@ -177,32 +249,127 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
   $(document).ready(function(){
     
     var base_url = "";
+    var option_professor_value;
+    var option_day_value;
+    var option_room_number_value;
+    
+    option_room_number_value = $("#option_room_number").val();
+    option_day_value = $("#option_day").val();
+    $.ajax({
 
-    var option_professor_value = $("#option_professor").val();
+        type: "POST",
+        url: 'getAllSchedules.php',
+        data : {day : option_day_value, room_number : option_room_number_value},
+        dataType: "json",
+        success: function(response)
+        {
+          populateTimeSchedules(response);
+        }
+      });
+
 
     $("#option_professor").on('change', function(){
-
+      option_professor_value = $("#option_professor").val();
+      option_room_number_value = $("#option_room_number").val();
+      option_day_value = $("#option_day").val();
       //ajax start
-      $.ajax({  
+      $.ajax({
               type: "POST",
               url: 'getUserCardNumber.php',
               data: {professor_id: option_professor_value},
               dataType:"json",
-              success: function(response){
-                $('#card_no').val(response);
-              },
-              error: function(xhr, textStatus, errorThrown){
-               alert('request failed');
+              success: function(response)
+              {
+                $('#card_no').val(response["serial_number"]);
               }
           });
-        //ajax end
-        
 
+      $.ajax({
+
+        type: "POST",
+        url: 'getAllSchedules.php',
+        data : {day : option_day_value, 
+                room_number : option_room_number_value,
+                professor_id : option_professor_value},
+        dataType: "json",
+        success: function(response)
+        {
+            populateTimeSchedules(response);
+        }
+      });
+
+
+        //ajax end
+    });
+
+    $("#option_day").on('change', function(){
+
+      option_room_number_value = $("#option_room_number").val();
+      option_day_value = $("#option_day").val();
+      option_professor_value = $("#option_professor").val();
+      $.ajax({
+
+        type: "POST",
+        url: 'getAllSchedules.php',
+        data : {day : option_day_value, 
+                room_number : option_room_number_value,
+                professor_id : option_professor_value},
+        dataType: "json",
+        success: function(response)
+        {
+            populateTimeSchedules(response);
+        }
+      });
+    });
+
+
+    $("#option_room_number").on('change', function(){
+
+      option_room_number_value = $("#option_room_number").val();
+      option_day_value = $("#option_day").val();
+      option_professor_value = $("#option_professor").val();
+      $.ajax({
+
+        type: "POST",
+        url: 'getAllSchedules.php',
+        data : {day : option_day_value, 
+                room_number : option_room_number_value,
+                professor_id : option_professor_value},
+        dataType: "json",
+        success: function(response)
+        {
+          populateTimeSchedules(response);
+        }
+      });
 
     });
     
-  });
-</script>
+    function populateTimeSchedules(response)
+    {
+            var isFirst = true;
+            var schedtimeout = '';
+            var schedtimein = '';
 
+            $.each(response, function(index,value){   
+                schedtimein+= '<option value="'+index+'">'+value+'</option>';
+            }); 
+           $('#option_schedule_in').html(schedtimein);  
+
+
+            $.each(response, function(index,value){   
+                if(!isFirst)
+                  schedtimeout+= '<option value="'+index+'">'+value+'</option>';
+                isFirst = false; 
+            }); 
+           $('#option_schedule_out').html(schedtimeout);   
+    }
+
+
+  });//document ready end
+</script><!-- 
+,
+              error: function(xhr, textStatus, errorThrown){
+               alert('request failed');
+              } -->
 </body>
 </html>

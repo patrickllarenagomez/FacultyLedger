@@ -51,6 +51,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
     <td>'.$days[$rows[SCHEDULE_DAY]].'</td>
     <td>'.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_IN])).' - '.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_OUT])).'</td>
     <td align="center">'.$rows[ROOM_NUMBER].'</td>
+    <td></td>
     </tr>';
     $no++;
 }
@@ -131,6 +132,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
                             <th>Day</th>
                             <th>Time</th>
                             <th>Room No.</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
