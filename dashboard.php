@@ -168,9 +168,9 @@ foreach($professorDataArr as $key => $value)
     <h2 class="page-header">Welcome <?php echo $_SESSION[USER_FIRST_NAME]?>!</h2>
 
 <div class="row">
-  <div class="container">
+  <div class="container" style="width: 1000px;">
 
-    <div class="col-lg-5">
+    <div class="col-lg-6">
       <div class="panel panel-default">
         <div class="panel-heading">
           <i class="fa fa-bar-chart-o fa-fw"></i> Professors' Performance (<?php echo date('M d, Y', strtotime(date('Y-m-1')) ).' - '.date('M d, Y', strtotime(date('Y-m-d')));?>)
@@ -179,14 +179,14 @@ foreach($professorDataArr as $key => $value)
       </div>
 
       <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-lg-6">
               <div id="morris-bar-chart"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-5">
+    <div class="col-lg-6">
       <div class="panel panel-default">
           <div class="panel-heading">
               <i class="fa fa-bar-chart-o fa-fw"></i> Professors (To Date)
