@@ -109,7 +109,8 @@ foreach($professorDataArr as $key => $value)
       y: "'.$professorNames[$key].'",
       a: '.$value[IS_LATE].',
       b: '.$value[INVALIDLOG].',
-      c: '.$value[ROWS].'
+      c: '.($value[ROWS]-$value[IS_LATE]).',
+      d: '.$value[ROWS].'
     },';
 }
 //bar graph end
@@ -137,9 +138,10 @@ foreach($professorDataArr as $key => $value)
 
         ],
         xkey: 'y',
-        ykeys: ['a', 'b', 'c',],
-        labels: ['Late', 'Invalid', 'Attendance'],
+        ykeys: ['a', 'b', 'c', 'd'],
+        labels: ['Late', 'Invalid', 'On Time','Total Attendance'],
         hideHover: 'auto',
+        barColors: ["#ED2939", "#7a92a3", "#197319", "#0087BD"],
         resize: true
     
     });

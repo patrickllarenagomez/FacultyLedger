@@ -54,7 +54,6 @@ while($rows = mysqli_fetch_assoc($generateResults))
 		INVALIDLOG => $rows[INVALIDLOG],
 		ROWS => $rows[ROWS],
 		SCHEDULE_COUNT => $scheduleArray[$rows[PROFESSOR_ID]]
-
 	);
 
 }
