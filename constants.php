@@ -55,4 +55,13 @@ define('INVALIDLOG', 'invalid');
 define('ROWS', 'number_of_rows');
 define('SCHEDULE_COUNT', 'schedule_count');
 define("BASE_URL", "localhost/facultyledger/");
+define("0",0);
+define("SCHEDULE_COUNT_MONDAY", 'monday');
+define("SCHEDULE_COUNT_TUESDAY", 'tuesday');
+define("SCHEDULE_COUNT_WEDNESDAY", 'wednesday');
+define("SCHEDULE_COUNT_THURSDAY", 'thursday');
+define("SCHEDULE_COUNT_FRIDAY", 'friday');
+define("SCHEDULE_COUNT_SATURDAY", 'saturday');
+define("SCHEDULE_COUNT_SUNDAY", 'sunday');
+define("TOTAL", 'total');
 ?>

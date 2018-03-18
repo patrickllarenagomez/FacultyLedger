@@ -218,6 +218,7 @@ if(isset($_POST['cancelBtn']))
                         <option value="4">Thursday</option>
                         <option value="5">Friday</option>
                         <option value="6">Saturday</option>
+                        <option value="0">Sunday</option>
                       </select>
                   </div>
               </div>

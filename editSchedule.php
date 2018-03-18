@@ -56,7 +56,8 @@ $dayArr =  '<option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDUL
            <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '3' ? 'selected="selected"': '').'value="3">Wednesday</option>
            <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '4' ? 'selected="selected"': '').'value="4">Thursday</option>
            <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '5' ? 'selected="selected"': '').'value="5">Friday</option>
-           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '6' ? 'selected="selected"': '').'value="6">Saturday</option>';
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '6' ? 'selected="selected"': '').'value="6">Saturday</option>
+            <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '0' ? 'selected="selected"': '').'value="0">Sunday</option>';
 
 if(isset($_POST['schedSubmitBtn']))
 {

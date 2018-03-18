@@ -11,6 +11,14 @@ if(isset($_POST))
 	$endDate = $_POST["endDT"];
 }
 
+$profNameSQL = "SELECT ".PROFESSOR_FIRST_NAME.",".PROFESSOR_LAST_NAME.", ".PROFESSOR_ID." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
+$profname = mysqli_query($con, $profNameSQL);
+$profNameArr = array();
+while($rowProf = mysqli_fetch_assoc($profname))
+{
+	$profNameArr[$rowProf[PROFESSOR_ID]] = $rowProf[PROFESSOR_LAST_NAME].', '.$rowProf[PROFESSOR_FIRST_NAME];
+}
+
 //professor data start
 $professorArr = array();
 
@@ -28,13 +36,34 @@ $professorData = implode(",", $professorArr);
 
 //professor schedule start
 
-$scheduleSQL = "SELECT ".PROFESSOR_ID.", "."COUNT(*)"." as ".SCHEDULE_COUNT." FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".IS_ACTIVE." = 1 GROUP BY ".PROFESSOR_ID."";
+$scheduleSQL = "SELECT ".PROFESSOR_ID.", 
+
+"."COUNT(case when ".SCHEDULE_DAY." = '0' then 1 else null end)"." as ".SCHEDULE_COUNT_SUNDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '1' then 1 else null end)"." as ".SCHEDULE_COUNT_MONDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '2' then 1 else null end)"." as ".SCHEDULE_COUNT_TUESDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '3' then 1 else null end)"." as ".SCHEDULE_COUNT_WEDNESDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '4' then 1 else null end)"." as ".SCHEDULE_COUNT_THURSDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '5' then 1 else null end)"." as ".SCHEDULE_COUNT_FRIDAY.", 
+"."COUNT(case when ".SCHEDULE_DAY." = '6' then 1 else null end)"." as ".SCHEDULE_COUNT_SATURDAY.",
+"."COUNT(*) as ".SCHEDULE_COUNT." 
+
+FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".IS_ACTIVE." = 1 GROUP BY ".PROFESSOR_ID."";
 $schedules = mysqli_query($con, $scheduleSQL);
 
-
+$scheduleArray = array();
 while($rowData = mysqli_fetch_assoc($schedules))
 {
-	$scheduleArray[$rowData[PROFESSOR_ID]] = $rowData[SCHEDULE_COUNT];
+	$scheduleArray[$rowData[PROFESSOR_ID]] = array(
+
+		SCHEDULE_COUNT_SUNDAY =>$rowData[SCHEDULE_COUNT_SUNDAY],
+		SCHEDULE_COUNT_MONDAY =>$rowData[SCHEDULE_COUNT_MONDAY],
+		SCHEDULE_COUNT_TUESDAY =>$rowData[SCHEDULE_COUNT_TUESDAY],
+		SCHEDULE_COUNT_WEDNESDAY =>$rowData[SCHEDULE_COUNT_WEDNESDAY],
+		SCHEDULE_COUNT_THURSDAY =>$rowData[SCHEDULE_COUNT_THURSDAY],
+		SCHEDULE_COUNT_FRIDAY =>$rowData[SCHEDULE_COUNT_FRIDAY],
+		SCHEDULE_COUNT_SATURDAY =>$rowData[SCHEDULE_COUNT_SATURDAY],
+
+	);
 }
 
 //professor schedule code end
@@ -44,28 +73,222 @@ $generateSQL = "SELECT ".PROFESSOR_ID.","."SUM(".IS_LATE.") as ".IS_LATE."".", "
 
 $generateResults = mysqli_query($con, $generateSQL);
 
+//get number of occurences
+$startDT = strtotime($startDate);
+$endDT = strtotime($endDate);
+
+$scheduleOccurences = array();
+$daysInAWeek = getDays();
+
+for($y=0; $y<=6; $y++)
+{
+	$count = 1;
+	for($i = strtotime($daysInAWeek[$y], $startDT); $i <= $endDT; $i = strtotime('+1 week', $i))
+    	$scheduleOccurences[$y] = $count++;	
+}	
+
+	showarray($scheduleOccurences);
+// get number of occurences end
 
 $professorDataArr = array();
 while($rows = mysqli_fetch_assoc($generateResults))
 {	
 	$professorDataArr[$rows[PROFESSOR_ID]] = array(
-
 		IS_LATE => $rows[IS_LATE],
 		INVALIDLOG => $rows[INVALIDLOG],
 		ROWS => $rows[ROWS],
 		SCHEDULE_COUNT => $scheduleArray[$rows[PROFESSOR_ID]]
 	);
-
 }
 
+//count total no of professors start
+$countProf = "SELECT "."COUNT(*)"." as count FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
+$getProfCountResult = mysqli_query($con, $countProf);
+$rowCountProf = mysqli_fetch_assoc($getProfCountResult);
+//count total no of professors end
+
 showarray($professorDataArr);
+
+
+
+$dataForTable ='';
+$no = 1;
+$totalabsences = $totalinvalid = $totallate = 0;
+
+foreach($professorDataArr as $key => $value)
+{
+	$total = 0;
+	$count = 0;
+	$style = ($no%2 == 1) ? 'style="background:#EAEAEA"': ''; 
+	$dataForTable .= '<tr '.$style.'>
+
+	<td style="text-align:center">'.$no.'</td>
+	<td style="text-align:center">'.$profNameArr[$key].'</td>';
+	
+	foreach($value[SCHEDULE_COUNT] as $val)
+	{
+		$total += $val * $scheduleOccurences[$count];
+		$count++;
+				 
+	}
+	$dataForTable .=
+	'<td style="text-align:center">'.$total.'</td>';
+	$dataForTable .= '<td style="text-align:center">'.$value[ROWS].'</td>
+	<td style="text-align:center">'.($value[ROWS]-$value[IS_LATE]).'</td>
+	<td style="text-align:center">'.$value[IS_LATE].'</td>
+	<td style="text-align:center">'.$value[INVALIDLOG].'</td>
+	<td style="text-align:center">'.($total-$value[ROWS]).'</td>
+	</tr>';
+
+	$totalabsences += $total-$value[ROWS];
+	$totalinvalid += $value[INVALIDLOG];
+	$totallate += $value[IS_LATE];
+	$no++;
+}
 
 $_SESSION['generate_PDF'] = "<div class='alert alert-success alert-dismissible'>
 		  <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
 		  <strong>Report was generated successfully!</strong> 
 		</div>";
 
+?>
+
+<?php 
+	require_once '/vendor/autoload.php';
+	include('mpdf/mpdf.php');
+
+//for CRON only
+// $monthStart = new DateTime("first day of last month");
+// $monthEnd = new DateTime("last day of last month");
+// $MS = $monthStart->format('M d, Y');
+// $ME = $monthEnd->format('M d, Y');
 
 
-//header("location: attendance.php");
+$html = '<html>
+	<head>
+
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/styles1.css">
+	</head>
+	<body>
+		<div id="main">
+			<div id="">
+				<div id="">
+					<div id="">
+						<div class="" style="width:900px; margin:0 auto;">
+						<span style="text-align:center;"><img  src="images/banner-pcu.png"></a></span>
+					</div>
+				</div>
+			</div>
+			<div id="main_info">
+				<div id="main_body" class="align_left" style="width:1024px;">
+					<div class="body_title">
+						<span class="red_text"><h2>Attendance Report</h2></span>
+						<hr>
+					</div>
+
+					<div id="">
+						<table style="width:100%;">
+							<tr>
+								<td style="width:50%;">
+									<span>Date:</span><br>
+									<span class="strongText"><b>'.date('F d, Y',strtotime($startDate)) ." - ".date('F d, Y',strtotime($endDate)).'</b></span>
+								</td>
+								<td style="width:50%;" class="text_right">&nbsp;</td>
+							</tr>
+							<tr>
+								<td style="width:50%;">
+									<span>Total Number of Active Professors:</span><br>
+									<span class="strongTextCommission"><b>'.$rowCountProf['count'].'</b></span>
+								</td>
+								<td style="width:50%;">
+									<span>Total Number of Lates:</span><br>
+									<p class="strongTextCommission"><b>'.($totallate!=0 ? $totallate :'None').'</b></p>
+								</td>
+							</tr>
+							<tr>
+								<td style="width:50%;">
+									<span>Total Number of Absences:</span><br>
+									<span class="strongText"><b>'.($totalabsences!=0 ? $totalabsences :'None').'</b></span>
+								</td>
+
+								<td style="width:50%;">
+									<span>Total Number of Invalids:</span><br>
+									<span class="strongText"><b>'.($totalinvalid!=0 ? $totalinvalid :'None').'</b></span>
+								</td>
+						</table>
+					</div>
+
+					<div>					
+					 <table class="table table-striped" style="margin-top:15px" border=1 width="100%">
+						<tr>
+							<th style="text-align: center">No</th>
+							<th width="20%" style="text-align: center">Name</th>
+							<th style="text-align: center">Possible Total Attendance</th>
+							<th style="text-align: center">Total Attendance Entered</th>
+							<th style="text-align: center">On Time</th>
+							<th style="text-align: center">Late</th>
+							<th style="text-align: center">Invalid</th>
+							<th style="text-align: center">Absences</th>
+						</tr>
+
+						'.$dataForTable.'
+	
+						<tr><td colspan=8 height="25px"></td></tr><tr></tr>
+							<tr>
+								<td class="" colspan="3">
+									<span class="strongText">Prepared by:</span>
+								</td>
+								<td class="" colspan="3">
+									<span class="strongText">Checked by:</span>
+								</td>
+								<td colspan="2">
+									<span class="align_right strongText" style="padding-right:50px">Approved by:</span>
+								</td>
+							</tr>
+							<tr>
+								<td class="" colspan="3">
+									<br/>
+									<br/>
+									<p class="strongText"><u>Site Administrator</u></p>
+									<p class="smallText">'.date('F d, Y - h:i a').'</p>
+								</td>
+								<td colspan="3">
+									<span class="align_right strongText" style="padding-right:50px">&nbsp;</span>
+								</td>
+								<td colspan="2">
+									<span class="align_right strongText" style="padding-right:50px">&nbsp;</span>
+								</td>
+							</tr>
+
+
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<!-- END -->
+</html>';
+
+
+
+
+	ob_clean();
+	// MPDF
+	$mpdf = new mPDF('UTF-8', 'A4-L', 0, '', 10, 10, 10, 10);	
+	$mpdf->WriteHTML($html,2);
+
+	$fileName = date('M d, Y',strtotime($startDate)).' - '.date('M d, Y',strtotime($endDate)).' Attendance Report.pdf';
+	$path = 'PDF/'.$fileName;
+
+	//storing it
+	//$mpdf->Output($path, 'F');
+	
+	//viewing
+	$mpdf->Output($fileName, 'D');
+ 	header("location: attendance.php");
+
 ?>
