@@ -1,3 +1,18 @@
+<?php 
+
+session_start();
+
+require 'connect.php';
+include 'constants.php';
+
+
+if(isset($_SESSION[USER_LEVEL]))
+{
+    header('location: login.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

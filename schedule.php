@@ -21,7 +21,7 @@ while($row = mysqli_fetch_assoc($result))
     $professor_names[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME];
 }
 
-$searchSQL = "SELECT * FROM ".TBL_SCHEDULE." ORDER BY ".SCHEDULE_ID." DESC";
+$searchSQL = "SELECT * FROM ".TBL_SCHEDULE." WHERE ".IS_ACTIVE." = 1 ORDER BY ".SCHEDULE_ID." DESC";
 
 $dataresult = mysqli_query($con, $searchSQL);
 
@@ -43,6 +43,8 @@ $days = array(
 while($rows = mysqli_fetch_assoc($dataresult))
 {
 
+    $activeOrInactive = $rows[IS_ACTIVE] == 1 ? '<a><span style="cursor:pointer" onclick="deactivate('.$rows[SCHEDULE_ID].')" title="Deactivate" class="fa fa-close"></span></a>' : '<a><span style="cursor:pointer" onclick="activate('.$rows[SCHEDULE_ID].')" title="Activate" class="fa fa-check"></span></a>';
+
     $tableData .= '<tr>
     <td>'.$no.'</td>
     <td>'.$professor_names[$rows[PROFESSOR_ID]].'</td>
@@ -51,7 +53,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
     <td>'.$days[$rows[SCHEDULE_DAY]].'</td>
     <td>'.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_IN])).' - '.date('h:i:s a', strtotime($rows[SCHEDULE_TIME_OUT])).'</td>
     <td align="center">'.$rows[ROOM_NUMBER].'</td>
-    <td></td>
+    <td><a href="editSchedule.php?id='.$rows[SCHEDULE_ID].'"><span style="margin-right:5px"class="fa fa-edit" title="Edit"></span></a>'.$activeOrInactive.'</td>
     </tr>';
     $no++;
 }

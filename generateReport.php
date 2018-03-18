@@ -37,7 +37,6 @@ while($rowData = mysqli_fetch_assoc($schedules))
 	$scheduleArray[$rowData[PROFESSOR_ID]] = $rowData[SCHEDULE_COUNT];
 }
 
-showarray($scheduleArray);
 //professor schedule code end
 
 
@@ -66,6 +65,8 @@ $_SESSION['generate_PDF'] = "<div class='alert alert-success alert-dismissible'>
 		  <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
 		  <strong>Report was generated successfully!</strong> 
 		</div>";
+
+
 
 //header("location: attendance.php");
 ?>

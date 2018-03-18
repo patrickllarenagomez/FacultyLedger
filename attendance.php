@@ -61,11 +61,19 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
         $("#table-log").DataTable();
 
-        $('.daterange').daterangepicker();
+        $('.daterange').daterangepicker({
+            locale:
+            {
+                format: 'YYYY-MM-DD'
+            },
+            startDate: "<?php echo date('Y-m-01');?>",
+            endDate: "<?php echo date('Y-m-d');?>"
+        }
+        );
 
         $('#btn-generate-pdf').click(function(){
 
-           startDate = $('.daterange').data('daterangepicker').startDate.format("YYYY-MM-DD");
+           startDate = $('.daterange').data('daterangepicker').startDate.format("YYYY-MM-01");
            endDate =  $('.daterange').data('daterangepicker').endDate.format("YYYY-MM-DD");
 
         });

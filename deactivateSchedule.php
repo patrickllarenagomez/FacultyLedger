@@ -10,7 +10,7 @@ if(isset($_GET['id']))
 
 $updateSQL = "UPDATE ".TBL_SCHEDULE." SET 
 
-".IS_ACTIVE." = '1' 
+".IS_ACTIVE." = '0' 
 
 WHERE ".SCHEDULE_ID." = $schedule_id";
 

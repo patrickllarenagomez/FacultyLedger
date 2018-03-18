@@ -14,7 +14,17 @@ if(!isset($_SESSION[USER_LEVEL]))
 
 $days = getDays();
 
+//get 
+$sched_id = $_GET['id'];
 
+$retrieveSQL = "SELECT * FROM ".TBL_SCHEDULE." WHERE ".SCHEDULE_ID." = '$sched_id'";
+
+$retrieveResult = mysqli_query($con,$retrieveSQL);
+
+$resultArray = mysqli_fetch_assoc($retrieveResult);
+// end get
+
+//professor data
 $professorArr = array();
 
 $profSQL = "SELECT ".PROFESSOR_ID.", ".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
@@ -25,17 +35,28 @@ $option_professor = '';
 while($row = mysqli_fetch_assoc($result))
 {
   $professorArr[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME]; 
-  $option_professor .= '<option value='.$row[PROFESSOR_ID].'>'.$row[PROFESSOR_LAST_NAME].', '.$row[PROFESSOR_FIRST_NAME].'</option>';
+  $option_professor .= '<option '.(isset($resultArray[PROFESSOR_ID]) && $resultArray[PROFESSOR_ID] == $row[PROFESSOR_ID] ? 'selected="selected"' : '').' value='.$row[PROFESSOR_ID].'>'.$row[PROFESSOR_LAST_NAME].', '.$row[PROFESSOR_FIRST_NAME].'</option>';
 }
+//professor data end 
 
+//get room data
 $roomSQL = "SELECT * FROM ".TBL_ROOM_AVAILABILITY."";
 
 $resultSet = mysqli_query($con, $roomSQL);
 $option_rooms = '';
 while($rowroom = mysqli_fetch_assoc($resultSet))
 {
-  $option_rooms .= '<option value='.$rowroom[ROOM_NUMBER].'>'.$rowroom[ROOM_NUMBER].'</option>';
+  $option_rooms .= '<option '.(isset($resultArray[ROOM_NUMBER]) && $resultArray[ROOM_NUMBER] == $rowroom[ROOM_NUMBER] ? 'selected="selected"' :'' ).' value='.$rowroom[ROOM_NUMBER].'>'.$rowroom[ROOM_NUMBER].'</option>';
 }
+
+//get room data end
+
+$dayArr =  '<option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '1' ? 'selected="selected"': '').'value="1">Monday</option>
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '2' ? 'selected="selected"': '').'value="2">Tuesday</option>
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '3' ? 'selected="selected"': '').'value="3">Wednesday</option>
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '4' ? 'selected="selected"': '').'value="4">Thursday</option>
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '5' ? 'selected="selected"': '').'value="5">Friday</option>
+           <option '.(isset($resultArray[SCHEDULE_DAY]) && $resultArray[SCHEDULE_DAY] == '6' ? 'selected="selected"': '').'value="6">Saturday</option>';
 
 if(isset($_POST['schedSubmitBtn']))
 {
@@ -49,7 +70,7 @@ if(isset($_POST['schedSubmitBtn']))
   $subject_name = $_POST['form-subject-name'];
   $room_number = $_POST['form-room-number'];
 
-  $searchSQL = "SELECT ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.", ".ROOM_NUMBER.", ".SCHEDULE_DAY." FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." = '$professor_id' AND ".IS_ACTIVE." = ".ACTIVE." AND ".SCHEDULE_DAY." = '$schedule_day'";
+$searchSQL = "SELECT ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.", ".ROOM_NUMBER.", ".SCHEDULE_DAY." FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." = '$professor_id' AND ".IS_ACTIVE." = ".ACTIVE." AND ".SCHEDULE_DAY." = '$schedule_day'";
 
   $resultSQL = mysqli_query($con,$searchSQL);
 
@@ -61,7 +82,6 @@ if(isset($_POST['schedSubmitBtn']))
     <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
     <strong>Error:</strong> Conflict on Professor <strong>".$professorArr[$professor_id]."'s</strong> current schedule. Day is:<strong>".$days[$currentSched[SCHEDULE_DAY]]."</strong>. Conflict time is: <strong>".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_IN]))." - ".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_OUT]))." </strong>. Room Number is <strong>".$currentSched[ROOM_NUMBER]."</strong>.
     </div>";
-    showarray($currentSched);
     $checker = false;
       break;
     }
@@ -97,18 +117,17 @@ if(isset($_POST['schedSubmitBtn']))
   {
 
       $_SESSION['edit_schedule_success'] = "<div class='alert alert-success alert-dismissible'>
-    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-    <strong>Schedule was added successfully!</strong> 
-    </div>";
+      <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+      <strong>Schedule was updated successfully!</strong> 
+      </div>";
 
-      $insertSQL = "INSERT INTO ".TBL_SCHEDULE."
-      (".PROFESSOR_ID.", ".SUBJECT_CODE.", ".SUBJECT_NAME.", ".ROOM_NUMBER.", ".SCHEDULE_DAY.", ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.") VALUES 
-      ('$professor_id', '$subject_code', '$subject_name', '$room_number', '$schedule_day', '$timein', '$timeout')";
-      mysqli_query($con, $insertSQL);
+      $updateSQL = "UPDATE ".TBL_SCHEDULE." SET
+      ".PROFESSOR_ID." = '$professor_id', ".SUBJECT_CODE." = '$subject_code', ".SUBJECT_NAME." = '$subject_name', ".ROOM_NUMBER." = '$room_number', ".SCHEDULE_DAY." = '$schedule_day', ".SCHEDULE_TIME_IN." = '$timein', ".SCHEDULE_TIME_OUT." = '$timeout' WHERE ".SCHEDULE_ID." = '$sched_id'";
+      mysqli_query($con, $updateSQL);
+
       header("location: schedule.php");
   }
 }
-
 if(isset($_POST['cancelBtn']))
 {
   header("location: schedule.php");
@@ -174,7 +193,7 @@ if(isset($_POST['cancelBtn']))
 <?php include 'headerAndSideBar.php';?>
 
 <div class="dash_page">
-    <h1 class="page-header">Add Schedule</h1>
+    <h1 class="page-header">Edit Schedule</h1>
     <?php 
 
       echo isset($_SESSION['add_schedule_error']) ? $_SESSION['add_schedule_error'] : '';
@@ -193,7 +212,7 @@ if(isset($_POST['cancelBtn']))
               </div>
               <div class="col-md-6">
                   <label>Subject Code</label>
-                  <input type="text" name="form-subject-code">
+                  <input type="text" name="form-subject-code" value="<?php echo isset($resultArray[SUBJECT_CODE]) ? $resultArray[SUBJECT_CODE] : '' ?>">
               </div>
               <div class="col-md-6">
                   <label>Professor's Name</label>
@@ -206,18 +225,13 @@ if(isset($_POST['cancelBtn']))
               </div>
               <div class="col-md-6">
                   <label>Subject Name</label>
-                  <input type="text" name="form-subject-name">
+                  <input type="text" name="form-subject-name" value="<?php echo isset($resultArray[SUBJECT_NAME]) ? $resultArray[SUBJECT_NAME] : '' ?>">
               </div>
               <div class="col-md-6">
                   <label>Day</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
                       <select id="option_day" name="form-schedule-day">
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
+                          <?php echo $dayArr;?>
                       </select>
                   </div>
               </div>
@@ -243,7 +257,7 @@ if(isset($_POST['cancelBtn']))
                   </div>
               </div>
               <div class="col-md-12 buttons" style="margin-top: 40px; float: left;">
-                  <button name="schedSubmitBtn" class="btn btn-primary">Save</button>
+                  <button name="schedSubmitBtn" class="btn btn-primary">Update</button>
                   <button name="cancelBtn" class="btn btn-warning">Cancel</button>
               </div>
           </form>
@@ -256,11 +270,37 @@ if(isset($_POST['cancelBtn']))
 <script type="text/javascript">
   $(document).ready(function(){
     
+    //if editing
+
+    var editTimeIn = "<?php echo $resultArray[SCHEDULE_TIME_IN];?>";
+    var editTimeOut = "<?php echo $resultArray[SCHEDULE_TIME_OUT];?>";
+    var editTimeInText = "<?php echo date('h:i:s A',strtotime($resultArray[SCHEDULE_TIME_IN]));?>"    
+    var editTimeOutText = "<?php echo date('h:i:s A',strtotime($resultArray[SCHEDULE_TIME_OUT]));?>"
+
+
+    
+
+
+    //if editing end
+
+
     var base_url = "";
     var option_professor_value;
     var option_day_value;
     var option_room_number_value;
     
+    option_professor_value = $("#option_professor").val();
+    $.ajax({
+              type: "POST",
+              url: 'getUserCardNumber.php',
+              data: {professor_id: option_professor_value},
+              dataType:"json",
+              success: function(response)
+              {
+                $('#card_no').val(response["serial_number"]);
+              }
+          });
+
     option_room_number_value = $("#option_room_number").val();
     option_day_value = $("#option_day").val();
     $.ajax({
@@ -369,15 +409,30 @@ if(isset($_POST['cancelBtn']))
                   schedtimeout+= '<option value="'+index+'">'+value+'</option>';
                 isFirst = false; 
             }); 
-           $('#option_schedule_out').html(schedtimeout);   
+           $('#option_schedule_out').html(schedtimeout);
+
+           //for editing
+          if(editTimeIn && editTimeOut)
+          {
+            $("#option_schedule_in").append($('<option>', {
+              value: editTimeIn,
+              text: editTimeInText,
+              selected: true
+            }));
+      
+            $("#option_schedule_out").append($('<option>', {
+              value: editTimeOut,
+              text: editTimeOutText,
+              selected: true
+            }));
+          }
+          //for editing ends
     }
+
+    
 
 
   });//document ready end
-</script><!-- 
-,
-              error: function(xhr, textStatus, errorThrown){
-               alert('request failed');
-              } -->
+</script>
 </body>
 </html>

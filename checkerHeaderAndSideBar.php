@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <img src="images/logo-pcu.png" name="logo" height="50" width="50" style="float: left; margin: 5px 0px;">
-      <a class="navbar-brand" href="#">&nbsp; Faculty Attendance Ledger</a>
+      <a class="navbar-brand" href="login.php">&nbsp; Faculty Attendance Ledger</a>
     </div>
   </div>
 </nav>
