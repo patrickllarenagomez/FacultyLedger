@@ -87,7 +87,6 @@ for($y=0; $y<=6; $y++)
     	$scheduleOccurences[$y] = $count++;	
 }	
 
-	showarray($scheduleOccurences);
 // get number of occurences end
 
 $professorDataArr = array();
@@ -107,7 +106,6 @@ $getProfCountResult = mysqli_query($con, $countProf);
 $rowCountProf = mysqli_fetch_assoc($getProfCountResult);
 //count total no of professors end
 
-showarray($professorDataArr);
 
 
 
@@ -152,9 +150,8 @@ $_SESSION['generate_PDF'] = "<div class='alert alert-success alert-dismissible'>
 		</div>";
 
 ?>
-
 <?php 
-	require_once '/vendor/autoload.php';
+	//require_once '/vendor/autoload.php';
 	include('mpdf/mpdf.php');
 
 //for CRON only
@@ -290,5 +287,4 @@ $html = '<html>
 	//viewing
 	$mpdf->Output($fileName, 'D');
  	header("location: attendance.php");
-
 ?>

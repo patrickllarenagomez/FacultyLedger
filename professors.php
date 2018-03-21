@@ -68,7 +68,7 @@ while($row = mysqli_fetch_assoc($result))
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'headerAndSidebar.php';?> 
 
 
 <div class="dash_page">

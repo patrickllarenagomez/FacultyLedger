@@ -107,7 +107,7 @@ while($row = mysqli_fetch_assoc($roomavail))
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'headerAndSidebar.php';?> 
 
 <div class="dash_page">
     <h1 class="page-header">Room Slot</h1>

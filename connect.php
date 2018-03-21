@@ -1,7 +1,5 @@
 <?php 
 
-
-
 $username = 'root';
 $password = '';
 $db = 'faculty_ledger';
@@ -12,6 +10,5 @@ if(!mysqli_connect()){
 }
 
 date_default_timezone_set('Asia/Manila');
-
 
 ?>

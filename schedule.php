@@ -106,7 +106,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'headerAndSidebar.php';?> 
 
 
 <div class="dash_page">

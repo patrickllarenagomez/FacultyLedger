@@ -162,7 +162,7 @@ foreach($professorDataArr as $key => $value)
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?> 
+<?php include 'headerAndSidebar.php';?> 
 
 <div class="dash_page">
     <h2 class="page-header">Welcome <?php echo $_SESSION[USER_FIRST_NAME]?>!</h2>
