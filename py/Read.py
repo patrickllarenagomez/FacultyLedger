@@ -20,6 +20,8 @@ def end_read(signal, frame):
 def waitingForCard(self)
     lcd.lcd_display_string("  TAP CARD TO LOG.",1)
 
+def retry(self)
+    lcd.lcd_display_string("Retry tapping.", 1)
 #added codes
 
 #*************************************************************************
@@ -33,17 +35,6 @@ def waitingForCard(self)
 #code 7 ; "code" => 7, "professor_first_name" => , "professor_last_name", "not_time_yet"
 #code 8 ; "code" => 8, "professor_first_name" => , "professor_last_name", "is_updated"
 #*************************************************************************
-
-#variables 
-
-#room number depends on the room that the Raspberry PI is in
-room_number = '301';
-
-time_now = datetime.now().strftime('%H:%M:%S') 
-card_number = tag_id;
-timewithampm = datetime.now().strftime('%H:%M %p')
-
-#variables end
 
 # functions
 class printTextLCD:
@@ -140,84 +131,85 @@ class printTextLCD:
         lcd.lcd_display_string(first_name + " " + last_name, 1)
         lcd.lcd_display_string("LOG OUT REGISTERED.", 2)
         lcd.lcd_display_string(timewithampm, 3)
-        print(name + log out success)
+        #print(name + log out success)
 
 #functions end
 
 
-url = "http://pcufacultyledger.000webhostapp.com/timelog.php"
-data = {"card_number" : card_number, "current_time" : time_now, "room_number" : room_number}
-r = requests.post(url, data=data)
-data = r.json();
-
-
-#response 
-
-server_response = data["server_response"][0]['code']
-callback = printTextLCD() 
-
-if server_response is 0:
-    callback.code0(data)
-elif server_response is 1:
-    callback.code1(data)
-elif server_response is 2:
-    callback.code2(data)
-elif server_response is 3:
-    callback.code3(data)
-elif server_response is 4:
-    callback.code4(data)
-elif server_response is 5:
-    callback.code5(data)
-elif server_response is 6:
-    callback.code6(data)
-elif server_response is 7:
-    callback.code7(data)
-elif server_response is 8:
-    callback.code8(data)
 
 # added codes
 
 
 
 signal.signal(signal.SIGINT, end_read)
-print "Place your Card."
+waitingForCard()
 
 while continuous_reading:
 
     (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
     if status == reader.MI_OK:
-	print "--- Card Detected ---"
-    	tag_id, text = reader.read()
+		card, text = reader.read()
 
-	# get time with format hr-min-sec
-	tap_time = time.strftime("%H:%M:%S")
 
-	# display in LCD
-	lcd.lcd_display_string("Welcome!", 1)
-    	lcd.lcd_display_string("Time-In: " + tap_time, 2)
-	
-	print(tag_id)
-	print(tap_time)
+    #variables 
+
+    #room number depends on the room that the Raspberry PI is in
+    room_number = '300';
+
+    time_now = datetime.now().strftime('%H:%M:%S') 
+    card_number = card_id;
+    timewithampm = datetime.now().strftime('%H:%M %p')
+
+    #variables end
+
+    url = "http://pcufacultyledger.000webhostapp.com/timelog.php"
+    data = {"card_number" : card_number, "current_time" : time_now, "room_number" : room_number}
+    r = requests.post(url, data=data)
+    data = r.json();
+
+    #response 
+
+    server_response = data["server_response"][0]['code']
+    callback = printTextLCD() 
+
+    if server_response is 0:
+        callback.code0(data)
+    elif server_response is 1:
+        callback.code1(data)
+    elif server_response is 2:
+        callback.code2(data)
+    elif server_response is 3:
+        callback.code3(data)
+    elif server_response is 4:
+        callback.code4(data)
+    elif server_response is 5:
+        callback.code5(data)
+    elif server_response is 6:
+        callback.code6(data)
+    elif server_response is 7:
+        callback.code7(data)
+    elif server_response is 8:
+        callback.code8(data)
+    else:
+        retry()
+
 
 	# Stop
-        reader.MFRC522_StopCrypto1()        
+    reader.MFRC522_StopCrypto1()        
 
-        # wait card to removed 
-        print "--- Remove Card ---"
+    card_removed = False
+    card_removed_counter = 3
 
-        card_removed = False
-        card_removed_counter = 3
-
-        while not card_removed:
-            (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
-            if status != reader.MI_OK:
-                card_removed_counter = card_removed_counter-1
-                if card_removed_counter == 0:
-                    card_removed = True
-            else:
-                card_removed_counter = 3
-                
-        waitingForCard()
+    while not card_removed:
+        (status, TagType) = reader.MFRC522_Request(reader.PICC_REQIDL)
+        if status != reader.MI_OK:
+            card_removed_counter = card_removed_counter-1
+            if card_removed_counter == 0:
+                card_removed = True
+        else:
+            card_removed_counter = 3
+            
+    waitingForCard()
     time.sleep(3);
 
 
