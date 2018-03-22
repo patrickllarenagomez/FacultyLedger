@@ -171,7 +171,7 @@ if(isset($_POST['cancelBtn']))
 </head>
 <body>
 
-<?php include 'headerAndSideBar.php';?>
+<?php include 'headerAndSidebar.php';?>
 
 <div class="dash_page">
     <h1 class="page-header">Add Schedule</h1>
