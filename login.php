@@ -7,13 +7,10 @@ include 'helper.php';
 
 if(isset($_SESSION[USER_LEVEL]))
 {
-    if($_SESSION[USER_LEVEL] == 1)
+    if($_SESSION[USER_LEVEL] == 1 || $_SESSION[USER_LEVEL] == 3)
         header('location:dashboard.php');
     else if($_SESSION[USER_LEVEL] == 2)
-        header('location:checkerAttendance.php');
-    else
-        header('location:admin.php');
-        
+        header('location:checkerAttendance.php');       
 }
 
 
@@ -40,17 +37,13 @@ if(isset($_POST['submitLogin']))
             $_SESSION[USER_FIRST_NAME] = $dataRow[USER_FIRST_NAME];
             $_SESSION[USER_LAST_NAME] = $dataRow[USER_LAST_NAME];
             $_SESSION[USER_LEVEL] = $dataRow[USER_LEVEL];
-            if($dataRow[USER_LEVEL] == SECRETARY)
+            if($dataRow[USER_LEVEL] == SECRETARY || $dataRow[USER_LEVEL] == ADMIN)
             {
                 header('location: dashboard.php');
             }
-            else if($dataRow[USER_LEVEL] == CHECKER)
-            {
-                header('location: checkerAttendance.php');
-            }
             else
             {
-                header('location: admin.php');
+                header('location: checkerAttendance.php');
             }
         }
     }

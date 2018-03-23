@@ -106,7 +106,47 @@ $getProfCountResult = mysqli_query($con, $countProf);
 $rowCountProf = mysqli_fetch_assoc($getProfCountResult);
 //count total no of professors end
 
+$timelogArray = array();
+$getTimeLog = "SELECT * FROM ".TBL_TIME_LOG." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".TIME_LOG_DATE." BETWEEN '$startDate' AND '$endDate'";
 
+$timelogs = mysqli_query($con, $getTimeLog);
+$thisNo = 1;
+$timeLogTable = '';
+$statusValid = '';
+$statusLate = '';
+while($thisRow = mysqli_fetch_assoc($timelogs))
+{
+	$style = ($thisNo%2 == 1) ? 'style="background:#EAEAEA"': ''; 
+	if($thisRow[IS_VALID] != 1)
+	{
+		$statusValid = 'INVALID';
+	}
+	else
+	{
+		$statusValid = 'VALID';
+	}
+
+	if($thisRow[IS_LATE] == 1)
+	{
+		$statusLate = 'LATE';
+	}
+	else
+	{
+		$statusLate = 'ON-TIME';
+	}
+
+	$timeLogTable .= '<tr '.$style.'>
+
+	<td>'.$thisNo.'</td>
+	<td width="20%" style="text-align:center">'.$profNameArr[$thisRow[PROFESSOR_ID]].'</td>
+	<td colspan="3" style="text-align:center">'.date('D, F d, Y', strtotime($thisRow[TIME_LOG_DATE])).'</td>
+	<td colspan="2" style="text-align:center">'.($thisRow[TIME_LOG_IN] != '00:00:00' ? date('H:i:s a',strtotime($thisRow[TIME_LOG_IN])) : '-').'</td>
+	<td colspan="2" style="text-align:center">'.($thisRow[TIME_LOG_OUT] != '00:00:00' ? date('H:i:s a',strtotime($thisRow[TIME_LOG_OUT])) : '-').'</td>
+	<td style="text-align:center">'.$statusLate.' | '.$statusValid.'</td>
+	</tr>';
+	$thisNo++;
+
+}
 
 
 $dataForTable ='';
@@ -126,9 +166,9 @@ foreach($professorDataArr as $key => $value)
 	foreach($value[SCHEDULE_COUNT] as $val)
 	{
 		$total += $val * $scheduleOccurences[$count];
-		$count++;
-				 
+		$count++;			 
 	}
+
 	$dataForTable .=
 	'<td style="text-align:center">'.$total.'</td>';
 	$dataForTable .= '<td style="text-align:center">'.$value[ROWS].'</td>
@@ -231,13 +271,26 @@ $html = '<html>
 						</tr>
 
 						'.$dataForTable.'
-	
-						<tr><td colspan=8 height="25px"></td></tr><tr></tr>
+					</table>	
+
+					<table class="table table-striped" style="margin-top:15px" border=1 width="100%">
+						<tr>
+							<th style="text-align: center">No</th>
+							<th width="20%" style="text-align:center">Name</th>
+							<th colspan="3" style="text-align: center">Date</th>
+							<th colspan="2" style="text-align: center">Time In</th>
+							<th colspan="2" style="text-align: center">Time Out</th>
+							<th style="text-align: center">Status</th>
+						</tr>
+
+						'.$timeLogTable.'
+
+						<tr><td colspan=10 height="25px"></td></tr><tr></tr>
 							<tr>
-								<td class="" colspan="3">
+								<td class="" colspan="4">
 									<span class="strongText">Prepared by:</span>
 								</td>
-								<td class="" colspan="3">
+								<td class="" colspan="4">
 									<span class="strongText">Checked by:</span>
 								</td>
 								<td colspan="2">
@@ -245,13 +298,13 @@ $html = '<html>
 								</td>
 							</tr>
 							<tr>
-								<td class="" colspan="3">
+								<td class="" colspan="4">
 									<br/>
 									<br/>
 									<p class="strongText"><u>Site Administrator</u></p>
 									<p class="smallText">'.date('F d, Y - h:i a').'</p>
 								</td>
-								<td colspan="3">
+								<td colspan="4">
 									<span class="align_right strongText" style="padding-right:50px">&nbsp;</span>
 								</td>
 								<td colspan="2">

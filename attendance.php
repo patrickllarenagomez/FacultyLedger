@@ -11,7 +11,7 @@ if(!isset($_SESSION[USER_LEVEL]))
     header('location: login.php');
 }
 
-$getProfessorNames = "SELECT ".PROFESSOR_ID.",".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR." WHERE ".IS_ACTIVE." = 1";
+$getProfessorNames = "SELECT ".PROFESSOR_ID.",".PROFESSOR_FIRST_NAME.", ".PROFESSOR_LAST_NAME." FROM ".TBL_PROFESSOR."";
 
 $result = mysqli_query($con, $getProfessorNames);
 
@@ -114,6 +114,15 @@ while($rows = mysqli_fetch_assoc($dataresult))
             <div id="datepicker" style="float: left; margin-bottom: 20px;">
                         Select Start and End Date <input type='text' class="form-control daterange" id='datepicker'>
             </div>
+            <?php if($_SESSION[USER_LEVEL] == ADMIN){ 
+                $forAdmin ='<div class="buttons" style="float: right; margin-bottom: 15px;">
+                    <a href="add_timelog.php"><button class="btn btn-primary">Add</button></a>
+                </div>';
+
+                echo $forAdmin;
+            }
+            ?>
+
             <button id="btn-generate-pdf" class="btn btn-primary" style="margin: 20px 0px 0px 15px">Generate PDF</button>
             <table id="table-log" class="display" cellspacing="0" width="100%">
                 <thead>
