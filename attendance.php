@@ -22,7 +22,7 @@ while($row = mysqli_fetch_assoc($result))
     $professor_names[$row[PROFESSOR_ID]] = $row[PROFESSOR_FIRST_NAME].' '.$row[PROFESSOR_LAST_NAME];
 }
 
-$searchSQL = "SELECT * FROM ".TBL_TIME_LOG." ORDER BY ".TIME_LOG_ID." DESC";
+$searchSQL = "SELECT * FROM ".TBL_TIME_LOG." WHERE ".IS_ACTIVE." = ".ACTIVE." ORDER BY ".TIME_LOG_ID." DESC";
 
 $dataresult = mysqli_query($con, $searchSQL);
 
@@ -31,6 +31,11 @@ $no = 1;
 
 while($rows = mysqli_fetch_assoc($dataresult))
 {
+    if($_SESSION[USER_LEVEL] == ADMIN)
+    {
+        $is_active ='<td><a><span style="cursor:pointer" onclick="deactivate('.$rows[TIME_LOG_ID].')" title="Delete" class="fa fa-close"></span></a></td>';
+    }
+
     $tableData .= '<tr>
     <td>'.$no.'</td>
     <td>'.$professor_names[$rows[PROFESSOR_ID]].'</td>
@@ -39,6 +44,7 @@ while($rows = mysqli_fetch_assoc($dataresult))
     <td>'.(($rows[TIME_LOG_OUT] != "00:00:00") ? date('h:i:s a', strtotime($rows[TIME_LOG_OUT])) : NONE).'</td>
     <td>'.'ROOM '.$rows[ROOM_NUMBER].'</td>
     <td>'.($rows[IS_LATE] == 1 ? LATE : ONTIME).'</td>
+    '.$is_active.'
     </tr>';
     $no++;
 }
@@ -55,9 +61,17 @@ while($rows = mysqli_fetch_assoc($dataresult))
 
   <script src="js/jquery-ui.js"></script>
 <script type="text/javascript"> 
+    function deactivate(id)
+    {
+            if(confirm("Delete log? This is irrevocable."))
+                location.href = "deactivateLog.php?id=" + id;
+    }
+
     $(document).ready(function(){
         var startDate;
         var endDate;
+
+
 
         $("#table-log").DataTable();
 
@@ -84,6 +98,8 @@ while($rows = mysqli_fetch_assoc($dataresult))
             $("#endDT").val(endDate);
             $("#thisSubmit").submit();
         });
+        
+
 
 
     });
@@ -108,6 +124,16 @@ while($rows = mysqli_fetch_assoc($dataresult))
         
         if(isset($_SESSION['generate_PDF']))
             unset($_SESSION['generate_PDF']);
+
+        echo isset($_SESSION['add_attendance_success']) ? $_SESSION['add_attendance_success'] : "";
+
+        if(isset($_SESSION['add_attendance_success']))
+            unset($_SESSION['add_attendance_success']); 
+
+        echo isset($_SESSION['attendance_success_delete']) ? $_SESSION['attendance_success_delete'] : "";
+
+        if(isset($_SESSION['attendance_success_delete']))
+            unset($_SESSION['attendance_success_delete']);
     ?>
         <div class="container" style="width: 900px;">
 
@@ -134,6 +160,11 @@ while($rows = mysqli_fetch_assoc($dataresult))
                         <th>Time Out</th>
                         <th>Room No.</th>
                         <th>Status</th>
+                        <?php 
+
+                        if($_SESSION[USER_LEVEL] == ADMIN)
+                            echo '<th></th>';
+                        ?>
                     </tr>
                 </thead>
                 <tbody>

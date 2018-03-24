@@ -61,7 +61,6 @@ if(isset($_POST['schedSubmitBtn']))
     <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
     <strong>Error:</strong> Conflict on Professor <strong>".$professorArr[$professor_id]."'s</strong> current schedule. Day is:<strong>".$days[$currentSched[SCHEDULE_DAY]]."</strong>. Conflict time is: <strong>".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_IN]))." - ".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_OUT]))." </strong>. Room Number is <strong>".$currentSched[ROOM_NUMBER]."</strong>.
     </div>";
-    showarray($currentSched);
     $checker = false;
       break;
     }

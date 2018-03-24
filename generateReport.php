@@ -69,7 +69,7 @@ while($rowData = mysqli_fetch_assoc($schedules))
 //professor schedule code end
 
 
-$generateSQL = "SELECT ".PROFESSOR_ID.","."SUM(".IS_LATE.") as ".IS_LATE."".", "."COUNT(case when ".IS_VALID." = '0' then 1 else null end)"." as ".INVALIDLOG.", "."COUNT(*)"." as ".ROWS." FROM ".TBL_TIME_LOG." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".TIME_LOG_DATE." BETWEEN '$startDate' AND '$endDate' GROUP BY ".PROFESSOR_ID."";
+$generateSQL = "SELECT ".PROFESSOR_ID.","."SUM(".IS_LATE.") as ".IS_LATE."".", "."COUNT(case when ".IS_VALID." = '0' then 1 else null end)"." as ".INVALIDLOG.", "."COUNT(*)"." as ".ROWS." FROM ".TBL_TIME_LOG." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".TIME_LOG_DATE." BETWEEN '$startDate' AND '$endDate' AND ".IS_ACTIVE." = ".ACTIVE." GROUP BY ".PROFESSOR_ID."";
 
 $generateResults = mysqli_query($con, $generateSQL);
 
@@ -107,7 +107,7 @@ $rowCountProf = mysqli_fetch_assoc($getProfCountResult);
 //count total no of professors end
 
 $timelogArray = array();
-$getTimeLog = "SELECT * FROM ".TBL_TIME_LOG." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".TIME_LOG_DATE." BETWEEN '$startDate' AND '$endDate'";
+$getTimeLog = "SELECT * FROM ".TBL_TIME_LOG." WHERE ".PROFESSOR_ID." IN (".$professorData.") AND ".TIME_LOG_DATE." BETWEEN '$startDate' AND '$endDate' AND ".IS_ACTIVE." = ".ACTIVE."";
 
 $timelogs = mysqli_query($con, $getTimeLog);
 $thisNo = 1;

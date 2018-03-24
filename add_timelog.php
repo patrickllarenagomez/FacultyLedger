@@ -41,79 +41,86 @@ while($rowroom = mysqli_fetch_assoc($resultSet))
   $option_rooms .= '<option value='.$rowroom[ROOM_NUMBER].'>'.$rowroom[ROOM_NUMBER].'</option>';
 }
 
-if(isset($_POST['schedSubmitBtn']))
+if(isset($_POST['timelogSubmitBtn']))
 {
   $checker = true;
 
   $professor_id = $_POST['form-professor'];
   $schedule_day = $_POST['form-schedule-day'];
-  $timein = $_POST['form-time-in'];
-  $timeout = $_POST['form-time-out'];
+  if(isset($_POST['form-time-in']))
+  	$timesched = $_POST['form-time-in'];
   $room_number = $_POST['form-room-number'];
-
-  $searchSQL = "SELECT ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.", ".ROOM_NUMBER.", ".SCHEDULE_DAY." FROM ".TBL_SCHEDULE." WHERE ".PROFESSOR_ID." = '$professor_id' AND ".IS_ACTIVE." = ".ACTIVE." AND ".SCHEDULE_DAY." = '$schedule_day'";
-
-  $resultSQL = mysqli_query($con,$searchSQL);
-
-  while($currentSched = mysqli_fetch_assoc($resultSQL))
+  $date = $_POST['form-date'];
+  $status = $_POST['form-status'];
+  if(!isset($timesched))
   {
-    if(strtotime($timein) <= strtotime($currentSched[SCHEDULE_TIME_IN]) && strtotime($timeout) >= strtotime($currentSched[SCHEDULE_TIME_OUT]))
-    {
-    $_SESSION["add_schedule_error"] = "<div class='alert alert-danger alert-dismissible'>
+  	$_SESSION['add_attendance_error'] = "<div class='alert alert-danger alert-dismissible'>
     <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-    <strong>Error:</strong> Conflict on Professor <strong>".$professorArr[$professor_id]."'s</strong> current schedule. Day is:<strong>".$days[$currentSched[SCHEDULE_DAY]]."</strong>. Conflict time is: <strong>".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_IN]))." - ".date("h:i:s a", strtotime($currentSched[SCHEDULE_TIME_OUT]))." </strong>. Room Number is <strong>".$currentSched[ROOM_NUMBER]."</strong>.
+    <strong>Error: Time Schedule cannot be null.</strong> 
     </div>";
-    showarray($currentSched);
-    $checker = false;
-      break;
-    }
-  }
-
-  if(strtotime($timein) == strtotime($timeout))
-  {
-    $_SESSION['add_schedule_error'] = "<div class='alert alert-danger alert-dismissible'>
-    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-    <strong>Error: Time In and Time Out cannot be the same.</strong> 
-    </div>";
-    $checker = false;
+    $checker = false;	
   }
 
   if($professor_id == 0)
   {
-    $_SESSION['add_schedule_error'] = "<div class='alert alert-danger alert-dismissible'>
+    $_SESSION['add_attendance_error'] = "<div class='alert alert-danger alert-dismissible'>
     <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
     <strong>Error: Professor cannot be null.</strong> 
     </div>";
     $checker = false;
   }
 
-  if(strtotime($timein) > strtotime($timeout))
+  if(isset($timesched))
   {
-    $_SESSION['add_schedule_error'] = "<div class='alert alert-danger alert-dismissible'>
-    <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-    <strong>Error: Time In should be earlier than Time Out!</strong> 
-    </div>";
-    $checker = false;
+  	$getScheduleTime = "SELECT ".SCHEDULE_TIME_IN.",".SCHEDULE_TIME_OUT." FROM ".TBL_SCHEDULE." WHERE ".SCHEDULE_ID." = '$timesched'";
+  	$scheduleTimeIO=mysqli_query($con, $getScheduleTime);
+  	$scheduleTimeIOASSOC = mysqli_fetch_assoc($scheduleTimeIO);
+  	$timeInForSQL = $scheduleTimeIOASSOC[SCHEDULE_TIME_IN];
+  	$timeOutForSQL = $scheduleTimeIOASSOC[SCHEDULE_TIME_OUT];
+
+  	$checkIfLogExists = "SELECT * FROM ".TBL_TIME_LOG." WHERE ".TIME_LOG_DATE." = '$date' AND ".TIME_LOG_IN." BETWEEN '$timeInForSQL' AND '$timeOutForSQL' AND ".TIME_LOG_OUT." BETWEEN '$timeInForSQL' AND '$timeOutForSQL'";
+  	$logs = mysqli_query($con, $checkIfLogExists);
+  	if(mysqli_num_rows($logs) > 0)
+  	{
+  		$_SESSION['add_attendance_error'] = "<div class='alert alert-danger alert-dismissible'>
+    	<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
+    	<strong>Error: A log already exists for the schedule.</strong> 
+    	</div>";
+    	$checker = false;  		
+  	}
   }
+
   if($checker == true)
   {
 
-      $_SESSION['edit_schedule_success'] = "<div class='alert alert-success alert-dismissible'>
+      $_SESSION['add_attendance_success'] = "<div class='alert alert-success alert-dismissible'>
     <a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>
-    <strong>Schedule was added successfully!</strong> 
+    <strong>Attendance Log was added successfully!</strong> 
     </div>";
 
-      $insertSQL = "INSERT INTO ".TBL_SCHEDULE."
-      (".PROFESSOR_ID.", ".ROOM_NUMBER.", ".SCHEDULE_DAY.", ".SCHEDULE_TIME_IN.", ".SCHEDULE_TIME_OUT.") VALUES 
-      ('$professor_id','$room_number', '$schedule_day', '$timein', '$timeout')";
+    if($status == 1)
+    {
+    	$insertSQL = "INSERT INTO ".TBL_TIME_LOG."
+      (".PROFESSOR_ID.", ".TIME_LOG_DATE.", ".TIME_LOG_IN.", ".TIME_LOG_OUT.", ".ROOM_NUMBER.", ".IS_VALID.",".IS_LATE.") VALUES 
+      ('$professor_id','$date', '$timeInForSQL', '$timeOutForSQL', '$room_number', 1, 0)";
+      	
+    }
+    else
+    {
+    	$insertSQL = "INSERT INTO ".TBL_TIME_LOG."
+      (".PROFESSOR_ID.", ".TIME_LOG_DATE.", ".TIME_LOG_IN.", ".TIME_LOG_OUT.", ".ROOM_NUMBER.", ".IS_VALID.",".IS_LATE.") VALUES 
+      ('$professor_id','$date', '$timeInForSQL', '$timeOutForSQL', '$room_number', 1, 1)";
+      	
+    }
+
       mysqli_query($con, $insertSQL);
-      header("location: schedule.php");
+      header("location: attendance.php");
   }
 }
 
 if(isset($_POST['cancelBtn']))
 {
-  header("location: schedule.php");
+  header("location: attendance.php");
 }
 
 ?>
@@ -124,6 +131,9 @@ if(isset($_POST['cancelBtn']))
 <title>Class Schedule</title>
 
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"></link>
 <style type="text/css">
     th {
@@ -135,7 +145,7 @@ if(isset($_POST['cancelBtn']))
         padding: 5px;
         background: rgba(255,255,255,0.5);
     }
-    .styled-select.serial_numberte select {
+    .styled-select.slate select {
         font-size: 16px;
         width: 130px;
         border-radius: 3px;
@@ -179,35 +189,27 @@ if(isset($_POST['cancelBtn']))
     <h1 class="page-header">Add Log</h1>
     <?php 
 
-      echo isset($_SESSION['add_schedule_error']) ? $_SESSION['add_schedule_error'] : '';
+      echo isset($_SESSION['add_attendance_error']) ? $_SESSION['add_attendance_error'] : '';
 
-      if(isset($_SESSION['add_schedule_error']))
-        unset($_SESSION['add_schedule_error']);  
+      if(isset($_SESSION['add_attendance_error']))
+        unset($_SESSION['add_attendance_error']);  
 
 
     ?>
         <div class="container" style="width: 1000px;">
-          <form action="" method="POST">
+          <form action="" method="POST" id="thisForm">
           <div class="col-md-12 form-group">
               <div class="col-md-6">
                 <label>Card No.</label>
                 <input type="text" name="card_no" id="card_no" readOnly="true" style="width: 150px;">
               </div>
               <div class="col-md-6">
-              <label>Day</label>
-                  <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select id="option_day" name="form-schedule-day">
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                        <option value="0">Sunday</option>
-                      </select>
+                  <label>Date</label>
+                  <div class="slate" style="display: inline-block;">
+                      <input type="text" id="datePicker">
                   </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-12">
                   
               </div>
               <div class="col-md-6">
@@ -237,28 +239,41 @@ if(isset($_POST['cancelBtn']))
                   </div>
               </div>
               <div class="col-md-6">
-                  <label>Time Schedule</label>
+				<label>Day</label>
                   <div class="dropdown styled-select slate" style="display: inline-block;">
-                      <select name="form-time-in" id="option_schedule_in" style="width: 200px;">
-                        
+                      <select id="option_day" name="form-schedule-day">
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                        <option value="0">Sunday</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <label>Status</label>
+                  <div class="dropdown styled-select slate" style="display: inline-block;">
+                  	  <select name="form-status" id="option_status" style="width: 200px;">
+                        <option value="1">On-Time</option>
+                        <option value="2">Late</option>
                       </select>
                   </div>
               </div>
               <div class="col-md-12 buttons" style="margin-top: 40px; float: left;">
-                  <button name="schedSubmitBtn" class="btn btn-primary">Save</button>
+                  <button name="timelogSubmitBtn" id="timelogSubmitBtn" class="btn btn-primary">Save</button>
                   <button name="cancelBtn" class="btn btn-warning">Cancel</button>
               </div>
+              <input type="hidden" name="form-date" id="form-date" value=''>
           </form>
 
           </div>
         </div>
 </div>
 
-<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-    
-    var base_url = "";
     var option_professor_value;
     var option_day_value;
     var option_room_number_value;
@@ -328,7 +343,7 @@ if(isset($_POST['cancelBtn']))
       option_professor_value = $("#option_professor").val();
       $.ajax({
 
-        type: "POST",
+       type: "POST",
         url: 'getProfessorSchedules.php',
         data : {day : option_day_value, 
                 room_number : option_room_number_value,
@@ -342,6 +357,22 @@ if(isset($_POST['cancelBtn']))
 
     });
     
+
+    $('#datePicker').datepicker({
+    	dateFormat :'yy-mm-dd',	
+    	onSelect: function(dateText, inst) {
+    	    var date = $(this).datepicker('getDate');
+    		var dayOfWeek = date.getUTCDay();  
+
+      		if(dayOfWeek == 6)
+      			dayOfWeek = 0;
+      		else
+      			dayOfWeek += 1;
+      		$('#option_day').val(dayOfWeek).change();
+      		var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+ 			$("#form-date").val(dateString);
+    }});
+
     function populateTimeSchedules(response)
     {
             var isFirst = true;
@@ -356,6 +387,7 @@ if(isset($_POST['cancelBtn']))
             }); 
            $('#option_schedule_in').html(schedtimein);  
     }
+
 
 
   });//document ready end
